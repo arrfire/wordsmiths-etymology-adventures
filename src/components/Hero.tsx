@@ -1,6 +1,6 @@
-
 import { Button } from '@/components/ui/button';
 import { PlayCircle, Users, BookOpen, Award } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
   return (
@@ -29,13 +29,25 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button size="lg" className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold px-8 py-4 text-lg">
-              <PlayCircle className="mr-2 h-5 w-5" />
-              Start Learning Now
+            <Button 
+              asChild
+              size="lg" 
+              className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold px-8 py-4 text-lg"
+            >
+              <a href="https://www.youtube.com/@thewordsmithscorner" target="_blank" rel="noopener noreferrer">
+                <PlayCircle className="mr-2 h-5 w-5" />
+                Start Learning Now
+              </a>
             </Button>
-            <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg">
-              <Users className="mr-2 h-5 w-5" />
-              Join Community
+            <Button 
+              asChild
+              size="lg" 
+              className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white px-8 py-4 text-lg font-semibold"
+            >
+              <a href="https://t.me/wordsmithscorner" target="_blank" rel="noopener noreferrer">
+                <Users className="mr-2 h-5 w-5" />
+                Join Community
+              </a>
             </Button>
           </div>
           
