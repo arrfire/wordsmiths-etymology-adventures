@@ -1,7 +1,7 @@
-
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MessageCircle, Calendar, Trophy, Heart } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { MessageCircle, Calendar, Trophy, Heart, Users } from 'lucide-react';
 
 const Community = () => {
   const benefits = [
@@ -85,17 +85,27 @@ const Community = () => {
             </div>
             
             <div className="mt-8 p-4 bg-white rounded-lg">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-slate-900 mb-1">Join Us On:</div>
-                <div className="flex justify-center gap-4 text-sm text-slate-600">
-                  <span>Instagram</span>
+              <div className="text-center mb-4">
+                <div className="text-2xl font-bold text-slate-900 mb-2">Join Us On:</div>
+                <div className="flex justify-center gap-4 text-sm text-slate-600 mb-4">
+                  <a href="https://www.instagram.com/rajanph_12/" target="_blank" rel="noopener noreferrer" className="hover:text-pink-500 transition-colors">Instagram</a>
                   <span>•</span>
-                  <span>Twitter/X</span>
+                  <a href="https://x.com/0xwordsmith" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors">Twitter/X</a>
                   <span>•</span>
-                  <span>Telegram</span>
+                  <a href="https://t.me/wordsmithscorner" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors">Telegram</a>
                 </div>
-                <div className="mt-2 text-blue-600 font-medium">@WordsmithsCorner</div>
+                <div className="text-blue-600 font-medium mb-4">@WordsmithsCorner</div>
               </div>
+              
+              <Button 
+                asChild
+                className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold"
+              >
+                <a href="https://t.me/wordsmithscorner" target="_blank" rel="noopener noreferrer">
+                  <Users className="mr-2 h-4 w-4" />
+                  Join 275+ Enthusiasts
+                </a>
+              </Button>
             </div>
           </Card>
         </div>

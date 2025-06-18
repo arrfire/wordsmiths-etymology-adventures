@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button';
 import { PlayCircle, Users, BookOpen, Award } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 const Hero = () => {
   return (
