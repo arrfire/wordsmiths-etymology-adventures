@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import CommunityPage from "./pages/Community";
-import DailyChallengesPage from "./pages/DailyChallenges"; // NEW
+import DailyChallengesPage from "./pages/DailyChallenges.tsx"; // NEW
 import PrivacyPage from "./pages/Privacy";
 import TermsPage from "./pages/Terms";
 import NotFound from "./pages/NotFound";

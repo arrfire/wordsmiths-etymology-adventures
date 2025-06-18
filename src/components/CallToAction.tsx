@@ -72,19 +72,25 @@ const CallToAction = () => {
         <div className="text-center">
           <div className="space-y-4 sm:space-y-0 sm:flex sm:gap-4 sm:justify-center">
             <Button 
+              asChild
               size="lg" 
               className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-bold px-8 py-4 text-lg w-full sm:w-auto"
             >
-              <PlayCircle className="mr-2 h-5 w-5" />
-              Start Your Etymology Journey
-              <ArrowRight className="ml-2 h-5 w-5" />
+              <a href="https://www.youtube.com/@thewordsmithscorner" target="_blank" rel="noopener noreferrer">
+                <PlayCircle className="mr-2 h-5 w-5" />
+                Start Your Etymology Journey
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </a>
             </Button>
             <Button 
+              asChild
               size="lg" 
-              className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-8 py-4 text-lg w-full sm:w-auto"
+              className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-8 py-4 text-lg w-full sm:w-auto font-bold"
             >
-              <Users className="mr-2 h-5 w-5" />
-              Join 275+ Word Enthusiasts
+              <a href="https://t.me/wordsmithscorner" target="_blank" rel="noopener noreferrer">
+                <Users className="mr-2 h-5 w-5" />
+                Join 275+ Enthusiasts
+              </a>
             </Button>
           </div>
           
