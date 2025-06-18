@@ -1,5 +1,6 @@
+// src/components/Hero.tsx - UPDATED
 import { Button } from '@/components/ui/button';
-import { PlayCircle, Users, BookOpen, Award } from 'lucide-react';
+import { PlayCircle, Users, BookOpen, Award, Target } from 'lucide-react';
 
 const Hero = () => {
   return (
@@ -27,6 +28,7 @@ const Hero = () => {
             <span className="font-semibold text-white"> Wordsmith's Corner</span> - Where English Comes Alive in Minutes!
           </p>
           
+          {/* Updated CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button 
               asChild
@@ -38,6 +40,19 @@ const Hero = () => {
                 Start Learning Now
               </a>
             </Button>
+            
+            {/* NEW: Daily Challenges Button */}
+            <Button 
+              asChild
+              size="lg" 
+              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-4 text-lg font-semibold"
+            >
+              <a href="/challenges">
+                <Target className="mr-2 h-5 w-5" />
+                Daily Challenges
+              </a>
+            </Button>
+            
             <Button 
               asChild
               size="lg" 
