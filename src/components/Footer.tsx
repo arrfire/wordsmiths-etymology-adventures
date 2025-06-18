@@ -1,6 +1,6 @@
 
 import { Separator } from '@/components/ui/separator';
-import { BookOpen, Youtube, Instagram, Twitter, MessageSquare } from 'lucide-react';
+import { BookOpen, Youtube, Instagram, MessageSquare } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -17,10 +17,20 @@ const Footer = () => {
               Discover the fascinating stories behind everyday words in under 3 minutes.
             </p>
             <div className="flex gap-4">
-              <Youtube className="h-6 w-6 text-slate-400 hover:text-red-500 cursor-pointer transition-colors" />
-              <Instagram className="h-6 w-6 text-slate-400 hover:text-pink-500 cursor-pointer transition-colors" />
-              <Twitter className="h-6 w-6 text-slate-400 hover:text-blue-400 cursor-pointer transition-colors" />
-              <MessageSquare className="h-6 w-6 text-slate-400 hover:text-purple-400 cursor-pointer transition-colors" />
+              <a href="https://www.youtube.com/@thewordsmithscorner" target="_blank" rel="noopener noreferrer">
+                <Youtube className="h-6 w-6 text-slate-400 hover:text-red-500 cursor-pointer transition-colors" />
+              </a>
+              <a href="https://www.instagram.com/rajanph_12/" target="_blank" rel="noopener noreferrer">
+                <Instagram className="h-6 w-6 text-slate-400 hover:text-pink-500 cursor-pointer transition-colors" />
+              </a>
+              <a href="https://x.com/0xwordsmith" target="_blank" rel="noopener noreferrer">
+                <svg className="h-6 w-6 text-slate-400 hover:text-blue-400 cursor-pointer transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+              </a>
+              <a href="https://t.me/wordsmithscorner" target="_blank" rel="noopener noreferrer">
+                <MessageSquare className="h-6 w-6 text-slate-400 hover:text-blue-500 cursor-pointer transition-colors" />
+              </a>
             </div>
           </div>
           
@@ -37,7 +47,7 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Community</h4>
             <ul className="space-y-2 text-slate-300">
-              <li><a href="#" className="hover:text-white transition-colors">Discord Server</a></li>
+              <li><a href="https://t.me/wordsmithscorner" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Telegram Channel</a></li>
               <li><a href="#" className="hover:text-white transition-colors">Study Groups</a></li>
               <li><a href="#" className="hover:text-white transition-colors">Newsletter</a></li>
               <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>

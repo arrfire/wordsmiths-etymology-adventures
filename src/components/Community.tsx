@@ -90,9 +90,9 @@ const Community = () => {
                 <div className="flex justify-center gap-4 text-sm text-slate-600">
                   <span>Instagram</span>
                   <span>•</span>
-                  <span>Twitter</span>
+                  <span>Twitter/X</span>
                   <span>•</span>
-                  <span>Discord</span>
+                  <span>Telegram</span>
                 </div>
                 <div className="mt-2 text-blue-600 font-medium">@WordsmithsCorner</div>
               </div>

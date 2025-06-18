@@ -1,4 +1,3 @@
-
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { PlayCircle, Users, Bell, ArrowRight } from 'lucide-react';
@@ -82,8 +81,7 @@ const CallToAction = () => {
             </Button>
             <Button 
               size="lg" 
-              variant="outline" 
-              className="border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg w-full sm:w-auto"
+              className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-8 py-4 text-lg w-full sm:w-auto"
             >
               <Users className="mr-2 h-5 w-5" />
               Join 275+ Word Enthusiasts

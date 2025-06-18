@@ -33,7 +33,7 @@ const Hero = () => {
               <PlayCircle className="mr-2 h-5 w-5" />
               Start Learning Now
             </Button>
-            <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg">
+            <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg">
               <Users className="mr-2 h-5 w-5" />
               Join Community
             </Button>
