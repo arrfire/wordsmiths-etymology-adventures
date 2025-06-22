@@ -1,4 +1,3 @@
-
 import { Card } from '@/components/ui/card';
 import { BookOpen, Brain, PenTool, Globe, Clock, Users } from 'lucide-react';
 
@@ -11,7 +10,7 @@ const Features = () => {
       details: [
         "Surprising connections between unrelated vocabulary",
         "Historical events that shaped modern English",
-        "Mind-blowing word origins in under 3 minutes"
+        "Mind-blowing word origins in under 2 minutes"
       ]
     },
     {

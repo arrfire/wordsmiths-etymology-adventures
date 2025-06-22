@@ -1,3 +1,4 @@
+
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { PlayCircle, Users, Bell, ArrowRight } from 'lucide-react';
@@ -54,14 +55,14 @@ const CallToAction = () => {
               <div className="flex items-center gap-4">
                 <Bell className="h-8 w-8 text-green-400" />
                 <div>
-                  <div className="font-semibold">Tuesday & Friday</div>
+                  <div className="font-semibold">Every Thursday</div>
                   <div className="text-sm text-slate-300">Regular content delivery</div>
                 </div>
               </div>
               <div className="flex items-center gap-4">
                 <PlayCircle className="h-8 w-8 text-blue-400" />
                 <div>
-                  <div className="font-semibold">Quality Since 2021</div>
+                  <div className="font-semibold">Quality Since 2024</div>
                   <div className="text-sm text-slate-300">Consistent excellence</div>
                 </div>
               </div>

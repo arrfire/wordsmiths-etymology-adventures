@@ -1,4 +1,4 @@
-// src/components/Hero.tsx - UPDATED
+
 import { Button } from '@/components/ui/button';
 import { PlayCircle, Users, BookOpen, Award, Target } from 'lucide-react';
 
@@ -28,7 +28,6 @@ const Hero = () => {
             <span className="font-semibold text-white"> Wordsmith's Corner</span> - Where English Comes Alive in Minutes!
           </p>
           
-          {/* Updated CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button 
               asChild
@@ -41,7 +40,6 @@ const Hero = () => {
               </a>
             </Button>
             
-            {/* NEW: Daily Challenges Button */}
             <Button 
               asChild
               size="lg" 
@@ -75,7 +73,7 @@ const Hero = () => {
               <div className="text-slate-300">Avg Views/Video</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-yellow-400 mb-2">&lt;3</div>
+              <div className="text-3xl font-bold text-yellow-400 mb-2">&lt;2</div>
               <div className="text-slate-300">Minute Lessons</div>
             </div>
           </div>

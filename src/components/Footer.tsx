@@ -1,4 +1,4 @@
-// src/components/Footer.tsx - UPDATED
+
 import { Separator } from '@/components/ui/separator';
 import { Youtube, Instagram, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -11,7 +11,7 @@ const Footer = () => {
           <div className="md:col-span-2">
             <h3 className="text-2xl font-bold mb-4">Wordsmith's Corner</h3>
             <p className="text-slate-300 mb-6 max-w-md">
-              Discover the fascinating stories behind everyday words in under 3 minutes.
+              Discover the fascinating stories behind everyday words in under 2 minutes.
             </p>
             <div className="flex gap-4">
               <a href="https://www.youtube.com/@thewordsmithscorner" target="_blank" rel="noopener noreferrer">
@@ -35,9 +35,10 @@ const Footer = () => {
             <h4 className="font-semibold mb-4">Learning</h4>
             <ul className="space-y-2 text-slate-300">
               <li><a href="https://www.youtube.com/@thewordsmithscorner" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Latest Videos</a></li>
-              <li><Link to="/challenges" className="hover:text-white transition-colors">Daily Challenges</Link></li> {/* NEW */}
+              <li><Link to="/challenges" className="hover:text-white transition-colors">Daily Challenges</Link></li>
               <li><a href="https://www.youtube.com/@thewordsmithscorner/playlists" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Etymology Series</a></li>
               <li><a href="https://www.youtube.com/@thewordsmithscorner" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Word Origins</a></li>
+              <li><Link to="/about" className="hover:text-white transition-colors">About Us</Link></li>
             </ul>
           </div>
           
@@ -46,8 +47,8 @@ const Footer = () => {
             <ul className="space-y-2 text-slate-300">
               <li><a href="https://t.me/wordsmithscorner" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Telegram Channel</a></li>
               <li><Link to="/community" className="hover:text-white transition-colors">Join Community</Link></li>
-              <li><a href="https://www.youtube.com/@thewordsmithscorner/community" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Newsletter</a></li>
-              <li><a href="https://www.instagram.com/rajanph_12/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Contact Us</a></li>
+              <li><a href="mailto:contact@wordsmithscorner.com" className="hover:text-white transition-colors">Newsletter</a></li>
+              <li><a href="mailto:contact@wordsmithscorner.com" className="hover:text-white transition-colors">Contact Us</a></li>
             </ul>
           </div>
         </div>
@@ -61,6 +62,7 @@ const Footer = () => {
           <div className="flex gap-6 text-sm text-slate-400">
             <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
+            <Link to="/about" className="hover:text-white transition-colors">About Us</Link>
           </div>
         </div>
       </div>

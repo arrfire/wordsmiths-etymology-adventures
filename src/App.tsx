@@ -1,12 +1,12 @@
-// 1. First, update your App.tsx to include the new route
-// src/App.tsx
+
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import CommunityPage from "./pages/Community";
-import DailyChallengesPage from "./pages/DailyChallenges.tsx"; // NEW
+import DailyChallengesPage from "./pages/DailyChallenges.tsx";
+import About from "./pages/About";
 import PrivacyPage from "./pages/Privacy";
 import TermsPage from "./pages/Terms";
 import NotFound from "./pages/NotFound";
@@ -21,7 +21,8 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/community" element={<CommunityPage />} />
-          <Route path="/challenges" element={<DailyChallengesPage />} /> {/* NEW */}
+          <Route path="/challenges" element={<DailyChallengesPage />} />
+          <Route path="/about" element={<About />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="*" element={<NotFound />} />
