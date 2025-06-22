@@ -1,8 +1,12 @@
 
 import { Button } from '@/components/ui/button';
-import { PlayCircle, Users, BookOpen, Award, Target } from 'lucide-react';
+import { PlayCircle, Users, BookOpen, Award, Target, LogIn } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
+  const { user } = useAuth();
+
   return (
     <section className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 text-white">
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iNyIgY3k9IjciIHI9IjEiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-20"></div>
@@ -40,16 +44,29 @@ const Hero = () => {
               </a>
             </Button>
             
-            <Button 
-              asChild
-              size="lg" 
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-4 text-lg font-semibold"
-            >
-              <a href="/challenges">
-                <Target className="mr-2 h-5 w-5" />
-                Daily Challenges
-              </a>
-            </Button>
+            {user ? (
+              <Button 
+                asChild
+                size="lg" 
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-4 text-lg font-semibold"
+              >
+                <Link to="/challenges">
+                  <Target className="mr-2 h-5 w-5" />
+                  Daily Challenges
+                </Link>
+              </Button>
+            ) : (
+              <Button 
+                asChild
+                size="lg" 
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-4 text-lg font-semibold"
+              >
+                <Link to="/auth">
+                  <LogIn className="mr-2 h-5 w-5" />
+                  Sign In for Challenges
+                </Link>
+              </Button>
+            )}
             
             <Button 
               asChild

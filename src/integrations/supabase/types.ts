@@ -9,7 +9,184 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      achievements: {
+        Row: {
+          created_at: string
+          description: string
+          icon: string
+          id: string
+          requirement_type: string
+          requirement_value: number
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          icon: string
+          id?: string
+          requirement_type: string
+          requirement_value: number
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          icon?: string
+          id?: string
+          requirement_type?: string
+          requirement_value?: number
+          title?: string
+        }
+        Relationships: []
+      }
+      challenges: {
+        Row: {
+          challenge_type: string
+          correct_answer: number
+          created_at: string
+          date_assigned: string
+          description: string
+          difficulty: string
+          explanation: string
+          hint: string
+          id: string
+          options: Json
+          points: number
+          question: string
+          title: string
+        }
+        Insert: {
+          challenge_type: string
+          correct_answer: number
+          created_at?: string
+          date_assigned?: string
+          description: string
+          difficulty: string
+          explanation: string
+          hint: string
+          id?: string
+          options: Json
+          points?: number
+          question: string
+          title: string
+        }
+        Update: {
+          challenge_type?: string
+          correct_answer?: number
+          created_at?: string
+          date_assigned?: string
+          description?: string
+          difficulty?: string
+          explanation?: string
+          hint?: string
+          id?: string
+          options?: Json
+          points?: number
+          question?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          current_streak: number
+          id: string
+          last_challenge_date: string | null
+          longest_streak: number
+          total_points: number
+          updated_at: string
+          username: string | null
+        }
+        Insert: {
+          created_at?: string
+          current_streak?: number
+          id: string
+          last_challenge_date?: string | null
+          longest_streak?: number
+          total_points?: number
+          updated_at?: string
+          username?: string | null
+        }
+        Update: {
+          created_at?: string
+          current_streak?: number
+          id?: string
+          last_challenge_date?: string | null
+          longest_streak?: number
+          total_points?: number
+          updated_at?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
+      user_achievements: {
+        Row: {
+          achievement_id: string
+          id: string
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          id?: string
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          id?: string
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_challenge_attempts: {
+        Row: {
+          challenge_id: string
+          completed_at: string
+          id: string
+          is_correct: boolean
+          points_earned: number
+          selected_answer: number
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          completed_at?: string
+          id?: string
+          is_correct: boolean
+          points_earned?: number
+          selected_answer: number
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          completed_at?: string
+          id?: string
+          is_correct?: boolean
+          points_earned?: number
+          selected_answer?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_challenge_attempts_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
