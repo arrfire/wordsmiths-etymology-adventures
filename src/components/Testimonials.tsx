@@ -10,7 +10,7 @@ const Testimonials = () => {
       type: "New Member"
     },
     {
-      quote: "I learn more about language in 3 minutes here than in hour-long videos elsewhere.",
+      quote: "I learn more about language in 2 minutes here than in hour-long videos elsewhere.",
       author: "Community member",
       type: "Active Learner"
     },

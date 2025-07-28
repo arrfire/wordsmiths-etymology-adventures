@@ -19,8 +19,8 @@ const Stats = () => {
     {
       icon: <Clock className="h-8 w-8 text-green-600" />,
       title: "Efficient Learning",
-      description: "Under 3 minutes of concentrated, valuable education per video",
-      highlight: "<3 Minutes"
+      description: "Under 2 minutes of concentrated, valuable education per video",
+      highlight: "<2 Minutes"
     },
     {
       icon: <TrendingUp className="h-8 w-8 text-purple-600" />,
