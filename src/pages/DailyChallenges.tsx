@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Target, Trophy, Clock, Star, Flame, Award, CheckCircle, XCircle, Lightbulb, Users, Crown, Zap, LogOut } from 'lucide-react';
+import { ArrowLeft, Target, Trophy, Clock, Star, Flame, Award, CheckCircle, XCircle, Lightbulb, Users, Crown, Zap, LogOut, ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useChallenges } from '@/hooks/useChallenges';
@@ -13,6 +13,7 @@ import Footer from '@/components/Footer';
 const DailyChallengesPage = () => {
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<{[key: string]: number}>({});
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const { user, signOut } = useAuth();
   const { 
     challenges, 
@@ -23,7 +24,7 @@ const DailyChallengesPage = () => {
     isLoading, 
     submitAnswer, 
     submitting 
-  } = useChallenges();
+  } = useChallenges(selectedDate);
 
   if (isLoading) {
     return (
@@ -60,15 +61,61 @@ const DailyChallengesPage = () => {
   const getCurrentChallenge = () => challenges[currentChallenge];
   const challenge = getCurrentChallenge();
   
+  const changeDate = (direction: 'prev' | 'next') => {
+    const currentDate = new Date(selectedDate);
+    const newDate = new Date(currentDate);
+    
+    if (direction === 'prev') {
+      newDate.setDate(newDate.getDate() - 1);
+    } else {
+      newDate.setDate(newDate.getDate() + 1);
+    }
+    
+    // Don't allow future dates
+    const today = new Date().toISOString().split('T')[0];
+    const newDateString = newDate.toISOString().split('T')[0];
+    
+    if (direction === 'next' && newDateString > today) {
+      toast.error('Cannot view future challenges');
+      return;
+    }
+    
+    setSelectedDate(newDateString);
+    setCurrentChallenge(0);
+    setSelectedAnswers({});
+  };
+
+  const isToday = selectedDate === new Date().toISOString().split('T')[0];
+  const formattedDate = new Date(selectedDate).toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+  
   if (!challenge) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
         <Card className="p-8 text-center">
           <h2 className="text-2xl font-bold mb-4">No Challenges Available</h2>
-          <p className="text-slate-600 mb-6">Check back tomorrow for new daily challenges!</p>
-          <Button asChild>
-            <Link to="/">Back to Home</Link>
-          </Button>
+          <p className="text-slate-600 mb-6">No challenges found for {formattedDate}</p>
+          <div className="flex gap-4 justify-center">
+            <Button variant="outline" onClick={() => changeDate('prev')}>
+              <ChevronLeft className="h-4 w-4 mr-2" />
+              Previous Day
+            </Button>
+            <Button asChild>
+              <Link to="/">Back to Home</Link>
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => changeDate('next')}
+              disabled={selectedDate >= new Date().toISOString().split('T')[0]}
+            >
+              Next Day
+              <ChevronRight className="h-4 w-4 ml-2" />
+            </Button>
+          </div>
         </Card>
       </div>
     );
@@ -135,6 +182,36 @@ const DailyChallengesPage = () => {
                 Sign Out
               </Button>
             </div>
+          </div>
+          
+          {/* Date Navigation */}
+          <div className="flex items-center justify-center gap-4 mt-4 pt-4 border-t">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => changeDate('prev')}
+            >
+              <ChevronLeft className="h-4 w-4 mr-1" />
+              Previous
+            </Button>
+            
+            <div className="flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-lg">
+              <Calendar className="h-4 w-4 text-slate-600" />
+              <span className="font-medium text-slate-800">
+                {formattedDate}
+                {isToday && <Badge className="ml-2 bg-green-100 text-green-800">Today</Badge>}
+              </span>
+            </div>
+            
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => changeDate('next')}
+              disabled={selectedDate >= new Date().toISOString().split('T')[0]}
+            >
+              Next
+              <ChevronRight className="h-4 w-4 ml-1" />
+            </Button>
           </div>
         </div>
       </header>

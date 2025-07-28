@@ -47,19 +47,19 @@ export interface UserAttempt {
   completed_at: string;
 }
 
-export const useChallenges = () => {
+export const useChallenges = (selectedDate?: string) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const targetDate = selectedDate || new Date().toISOString().split('T')[0];
 
-  // Fetch today's challenges
+  // Fetch challenges for the selected date
   const { data: challenges = [], isLoading: challengesLoading } = useQuery({
-    queryKey: ['challenges', new Date().toISOString().split('T')[0]],
+    queryKey: ['challenges', targetDate],
     queryFn: async () => {
-      const today = new Date().toISOString().split('T')[0];
       const { data, error } = await supabase
         .from('challenges')
         .select('*')
-        .eq('date_assigned', today)
+        .eq('date_assigned', targetDate)
         .order('created_at');
       
       if (error) throw error;
@@ -85,9 +85,9 @@ export const useChallenges = () => {
     enabled: !!user,
   });
 
-  // Fetch user attempts for today
+  // Fetch user attempts for the selected date
   const { data: userAttempts = [], isLoading: attemptsLoading } = useQuery({
-    queryKey: ['attempts', user?.id, new Date().toISOString().split('T')[0]],
+    queryKey: ['attempts', user?.id, targetDate],
     queryFn: async () => {
       if (!user) return [];
       
@@ -95,7 +95,8 @@ export const useChallenges = () => {
         .from('user_challenge_attempts')
         .select('*')
         .eq('user_id', user.id)
-        .gte('completed_at', new Date().toISOString().split('T')[0]);
+        .gte('completed_at', targetDate)
+        .lt('completed_at', new Date(new Date(targetDate).getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]);
       
       if (error) throw error;
       return data as UserAttempt[];
