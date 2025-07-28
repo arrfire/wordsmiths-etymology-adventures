@@ -23,7 +23,7 @@ const Community = () => {
     {
       icon: <Calendar className="h-6 w-6 text-green-600" />,
       title: "Consistent Schedule",
-      description: "New content every Tuesday & Friday you can count on"
+      description: "New content every Thursday you can count on"
     }
   ];
 

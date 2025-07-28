@@ -57,7 +57,7 @@ const Footer = () => {
         
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="text-slate-400 text-sm">
-            © 2024 Wordsmith's Corner. All rights reserved. • Quality etymology education since 2021
+            © 2021 Wordsmith's Corner. All rights reserved. • Quality etymology education since 2021
           </div>
           <div className="flex gap-6 text-sm text-slate-400">
             <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
