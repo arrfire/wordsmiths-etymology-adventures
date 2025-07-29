@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useChallenges } from '@/hooks/useChallenges';
 import { toast } from 'sonner';
 import Footer from '@/components/Footer';
+import { supabase } from '@/integrations/supabase/client';
 
 const DailyChallengesPage = () => {
   const [currentChallenge, setCurrentChallenge] = useState(0);
@@ -94,11 +95,46 @@ const DailyChallengesPage = () => {
   });
   
   if (!challenge) {
+    const [generating, setGenerating] = useState(false);
+    
+    const generateChallenges = async () => {
+      setGenerating(true);
+      try {
+        const { data, error } = await supabase.functions.invoke('generate-daily-challenges', {
+          body: {}
+        });
+        
+        if (error) {
+          console.error('Error:', error);
+          toast.error('Failed to generate challenges: ' + error.message);
+        } else {
+          console.log('Success:', data);
+          toast.success('Daily challenges generated successfully!');
+          // Refresh the page to show new challenges
+          window.location.reload();
+        }
+      } catch (err) {
+        console.error('Error invoking function:', err);
+        toast.error('Failed to generate challenges');
+      } finally {
+        setGenerating(false);
+      }
+    };
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
         <Card className="p-8 text-center">
           <h2 className="text-2xl font-bold mb-4">No Challenges Available</h2>
           <p className="text-slate-600 mb-6">No challenges found for {formattedDate}</p>
+          {isToday && (
+            <Button 
+              onClick={generateChallenges}
+              disabled={generating}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 mb-4"
+            >
+              {generating ? 'Generating...' : 'Generate Today\'s Challenges'}
+            </Button>
+          )}
           <div className="flex gap-4 justify-center">
             <Button variant="outline" onClick={() => changeDate('prev')}>
               <ChevronLeft className="h-4 w-4 mr-2" />
