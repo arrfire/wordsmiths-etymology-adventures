@@ -94,7 +94,7 @@ const DailyChallengesPage = () => {
     month: 'long',
     day: 'numeric'
   });
-  
+
   const generateChallenges = async () => {
     setGenerating(true);
     try {
@@ -118,7 +118,7 @@ const DailyChallengesPage = () => {
       setGenerating(false);
     }
   };
-
+  
   if (!challenge) {
 
     return (
