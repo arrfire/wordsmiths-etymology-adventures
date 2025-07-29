@@ -15,6 +15,7 @@ const DailyChallengesPage = () => {
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<{[key: string]: number}>({});
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [generating, setGenerating] = useState(false);
   const { user, signOut } = useAuth();
   const { 
     challenges, 
@@ -94,32 +95,31 @@ const DailyChallengesPage = () => {
     day: 'numeric'
   });
   
-  if (!challenge) {
-    const [generating, setGenerating] = useState(false);
-    
-    const generateChallenges = async () => {
-      setGenerating(true);
-      try {
-        const { data, error } = await supabase.functions.invoke('generate-daily-challenges', {
-          body: {}
-        });
-        
-        if (error) {
-          console.error('Error:', error);
-          toast.error('Failed to generate challenges: ' + error.message);
-        } else {
-          console.log('Success:', data);
-          toast.success('Daily challenges generated successfully!');
-          // Refresh the page to show new challenges
-          window.location.reload();
-        }
-      } catch (err) {
-        console.error('Error invoking function:', err);
-        toast.error('Failed to generate challenges');
-      } finally {
-        setGenerating(false);
+  const generateChallenges = async () => {
+    setGenerating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-daily-challenges', {
+        body: {}
+      });
+      
+      if (error) {
+        console.error('Error:', error);
+        toast.error('Failed to generate challenges: ' + error.message);
+      } else {
+        console.log('Success:', data);
+        toast.success('Daily challenges generated successfully!');
+        // Refresh the page to show new challenges
+        window.location.reload();
       }
-    };
+    } catch (err) {
+      console.error('Error invoking function:', err);
+      toast.error('Failed to generate challenges');
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  if (!challenge) {
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
