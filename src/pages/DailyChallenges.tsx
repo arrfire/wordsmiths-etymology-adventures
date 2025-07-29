@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -16,6 +15,7 @@ const DailyChallengesPage = () => {
   const [selectedAnswers, setSelectedAnswers] = useState<{[key: string]: number}>({});
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [generating, setGenerating] = useState(false);
+  
   const { user, signOut } = useAuth();
   const { 
     challenges, 
@@ -28,19 +28,36 @@ const DailyChallengesPage = () => {
     submitting 
   } = useChallenges(selectedDate);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-slate-600">Loading your challenges...</p>
-        </div>
-      </div>
-    );
-  }
+  // Timer state
+  const [timeRemaining, setTimeRemaining] = useState(0);
+
+  // Calculate time remaining until next day
+  useEffect(() => {
+    const updateTimer = () => {
+      const now = new Date();
+      const tomorrow = new Date(now);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
+      const remaining = Math.floor((tomorrow.getTime() - now.getTime()) / 1000);
+      setTimeRemaining(remaining);
+    };
+
+    updateTimer();
+    const timer = setInterval(updateTimer, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (seconds: number) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${h}h ${m}m ${s}s`;
+  };
 
   const handleAnswer = (challengeId: string, answerIndex: number) => {
-    if (userAttempts.some(attempt => attempt.challenge_id === challengeId)) return;
+    const userAttempt = userAttempts.find(attempt => attempt.challenge_id === challengeId);
+    if (userAttempt) return; // Already answered
+    
     setSelectedAnswers(prev => ({ ...prev, [challengeId]: answerIndex }));
   };
 
@@ -60,9 +77,6 @@ const DailyChallengesPage = () => {
     toast.info(hint, { duration: 5000 });
   };
 
-  const getCurrentChallenge = () => challenges[currentChallenge];
-  const challenge = getCurrentChallenge();
-  
   const changeDate = (direction: 'prev' | 'next') => {
     const currentDate = new Date(selectedDate);
     const newDate = new Date(currentDate);
@@ -87,14 +101,6 @@ const DailyChallengesPage = () => {
     setSelectedAnswers({});
   };
 
-  const isToday = selectedDate === new Date().toISOString().split('T')[0];
-  const formattedDate = new Date(selectedDate).toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-
   const generateChallenges = async () => {
     setGenerating(true);
     try {
@@ -118,12 +124,31 @@ const DailyChallengesPage = () => {
       setGenerating(false);
     }
   };
-  
-  if (!challenge) {
 
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
-        <Card className="p-8 text-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-slate-600">Loading your challenges...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const isToday = selectedDate === new Date().toISOString().split('T')[0];
+  const formattedDate = new Date(selectedDate).toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
+  // No challenges available
+  if (!challenges || challenges.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
+        <Card className="p-8 text-center max-w-md">
           <h2 className="text-2xl font-bold mb-4">No Challenges Available</h2>
           <p className="text-slate-600 mb-6">No challenges found for {formattedDate}</p>
           {isToday && (
@@ -157,24 +182,11 @@ const DailyChallengesPage = () => {
     );
   }
 
+  const challenge = challenges[currentChallenge];
   const userAttempt = userAttempts.find(attempt => attempt.challenge_id === challenge.id);
   const selectedAnswer = selectedAnswers[challenge.id];
   const isAnswered = !!userAttempt;
   const isCorrect = userAttempt?.is_correct || false;
-
-  // Calculate time remaining until next day
-  const now = new Date();
-  const tomorrow = new Date(now);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  tomorrow.setHours(0, 0, 0, 0);
-  const timeRemaining = Math.floor((tomorrow.getTime() - now.getTime()) / 1000);
-
-  const formatTime = (seconds: number) => {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = seconds % 60;
-    return `${h}h ${m}m ${s}s`;
-  };
 
   const completedChallenges = userAttempts.filter(attempt => attempt.is_correct);
   const todayPoints = userAttempts.reduce((sum, attempt) => sum + attempt.points_earned, 0);
@@ -436,23 +448,32 @@ const DailyChallengesPage = () => {
                   return (
                     <div
                       key={ch.id}
-                      className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all ${
-                        currentChallenge === index ? 'bg-blue-50 border border-blue-200' : 'hover:bg-gray-50'
-                      }`}
                       onClick={() => setCurrentChallenge(index)}
+                      className={`p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                        currentChallenge === index 
+                          ? 'border-blue-500 bg-blue-50' 
+                          : isCompleted 
+                          ? 'border-green-500 bg-green-50' 
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
                     >
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                        isCompleted
-                          ? 'bg-green-500 text-white'
-                          : currentChallenge === index
-                          ? 'bg-blue-500 text-white'
-                          : 'bg-gray-200 text-gray-600'
-                      }`}>
-                        {isCompleted ? <CheckCircle className="h-4 w-4" /> : index + 1}
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-medium text-sm">{ch.title}</div>
-                        <div className="text-xs text-gray-500">{ch.points} pts</div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                            isCompleted 
+                              ? 'bg-green-500 text-white' 
+                              : currentChallenge === index 
+                              ? 'bg-blue-500 text-white' 
+                              : 'bg-gray-200 text-gray-600'
+                          }`}>
+                            {index + 1}
+                          </div>
+                          <div>
+                            <div className="font-medium text-sm">{ch.difficulty}</div>
+                            <div className="text-xs text-gray-500">+{ch.points} pts</div>
+                          </div>
+                        </div>
+                        {isCompleted && <CheckCircle className="h-5 w-5 text-green-500" />}
                       </div>
                     </div>
                   );
@@ -463,68 +484,74 @@ const DailyChallengesPage = () => {
             {/* Achievements */}
             <Card className="p-6">
               <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                <Award className="h-5 w-5 text-yellow-600" />
+                <Trophy className="h-5 w-5 text-yellow-600" />
                 Achievements
               </h3>
               <div className="space-y-3">
-                {achievementsWithStatus.slice(0, 6).map((achievement) => (
-                  <div
-                    key={achievement.id}
-                    className={`flex items-center gap-3 p-3 rounded-lg ${
-                      achievement.unlocked 
-                        ? 'bg-yellow-50 border border-yellow-200' 
-                        : 'bg-gray-50 border border-gray-200 opacity-60'
-                    }`}
-                  >
-                    <div className={`p-2 rounded-full ${
-                      achievement.unlocked ? 'bg-yellow-500 text-white' : 'bg-gray-300 text-gray-500'
-                    }`}>
-                      {achievement.icon === 'Target' && <Target className="h-4 w-4" />}
-                      {achievement.icon === 'Flame' && <Flame className="h-4 w-4" />}
-                      {achievement.icon === 'Award' && <Award className="h-4 w-4" />}
-                      {achievement.icon === 'Star' && <Star className="h-4 w-4" />}
-                      {achievement.icon === 'Crown' && <Crown className="h-4 w-4" />}
-                      {achievement.icon === 'Zap' && <Zap className="h-4 w-4" />}
-                    </div>
-                    <div>
-                      <div className="font-medium text-sm">{achievement.title}</div>
-                      <div className="text-xs text-gray-600">{achievement.description}</div>
+                {achievementsWithStatus.slice(0, 5).map((achievement) => (
+                  <div key={achievement.id} className={`p-3 rounded-lg border ${
+                    achievement.unlocked ? 'border-yellow-300 bg-yellow-50' : 'border-gray-200'
+                  }`}>
+                    <div className="flex items-center gap-3">
+                      <div className={`text-2xl ${achievement.unlocked ? 'grayscale-0' : 'grayscale'}`}>
+                        {achievement.icon}
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium text-sm">{achievement.title}</div>
+                        <div className="text-xs text-gray-500">{achievement.description}</div>
+                      </div>
+                      {achievement.unlocked && <Award className="h-4 w-4 text-yellow-500" />}
                     </div>
                   </div>
                 ))}
               </div>
             </Card>
 
-            {/* Daily Stats */}
+            {/* Leaderboard Preview */}
             <Card className="p-6">
               <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                <Users className="h-5 w-5 text-purple-600" />
-                Today's Stats
+                <Crown className="h-5 w-5 text-purple-600" />
+                Top Players
               </h3>
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Points Earned</span>
-                  <span className="font-medium">{todayPoints}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Challenges Done</span>
-                  <span className="font-medium">{userAttempts.length}/{challenges.length}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Accuracy</span>
-                  <span className="font-medium">
-                    {userAttempts.length > 0 
-                      ? Math.round((completedChallenges.length / userAttempts.length) * 100)
-                      : 0
-                    }%
-                  </span>
-                </div>
+              <div className="space-y-3">
+                {[
+                  { name: "WordMaster", points: 2580, streak: 45 },
+                  { name: "EtymoExpert", points: 2340, streak: 32 },
+                  { name: "LanguageLover", points: 2100, streak: 28 },
+                  { name: "RootSeeker", points: 1950, streak: 25 },
+                  { name: "WordWizard", points: 1820, streak: 22 }
+                ].map((player, index) => (
+                  <div key={player.name} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50">
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                      index === 0 ? 'bg-yellow-400 text-yellow-900' :
+                      index === 1 ? 'bg-gray-400 text-gray-900' :
+                      index === 2 ? 'bg-orange-400 text-orange-900' :
+                      'bg-gray-200 text-gray-600'
+                    }`}>
+                      {index + 1}
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium text-sm">{player.name}</div>
+                      <div className="text-xs text-gray-500">{player.points.toLocaleString()} pts</div>
+                    </div>
+                    <div className="flex items-center gap-1 text-xs text-orange-600">
+                      <Flame className="h-3 w-3" />
+                      {player.streak}
+                    </div>
+                  </div>
+                ))}
               </div>
+              
+              <Button asChild className="w-full mt-4" variant="outline">
+                <Link to="/community">
+                  View Full Leaderboard
+                </Link>
+              </Button>
             </Card>
           </div>
         </div>
       </div>
-      
+
       <Footer />
     </div>
   );
