@@ -62,7 +62,7 @@ const CallToAction = () => {
               <div className="flex items-center gap-4">
                 <PlayCircle className="h-8 w-8 text-blue-400" />
                 <div>
-                  <div className="font-semibold">Quality Since 2021</div>
+                  <div className="font-semibold">Quality Since 2024</div>
                   <div className="text-sm text-slate-300">Consistent excellence</div>
                 </div>
               </div>
