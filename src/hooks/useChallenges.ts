@@ -22,11 +22,13 @@ export interface Challenge {
 
 export interface UserProfile {
   id: string;
-  username: string;
+  username: string | null;
   total_points: number;
   current_streak: number;
   longest_streak: number;
   last_challenge_date: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Achievement {
@@ -40,11 +42,19 @@ export interface Achievement {
 
 export interface UserAttempt {
   id: string;
+  user_id: string;
   challenge_id: string;
   selected_answer: number;
   is_correct: boolean;
   points_earned: number;
   completed_at: string;
+}
+
+export interface UserAchievement {
+  id: string;
+  user_id: string;
+  achievement_id: string;
+  unlocked_at: string;
 }
 
 export const useChallenges = (selectedDate?: string) => {
@@ -126,11 +136,11 @@ export const useChallenges = (selectedDate?: string) => {
       
       const { data, error } = await supabase
         .from('user_achievements')
-        .select('achievement_id')
+        .select('*')
         .eq('user_id', user.id);
       
       if (error) throw error;
-      return data.map(ua => ua.achievement_id);
+      return data as UserAchievement[];
     },
     enabled: !!user,
   });
@@ -199,17 +209,19 @@ export const useChallenges = (selectedDate?: string) => {
   });
 
   const checkAchievements = async (userId: string, stats: { total_points: number; current_streak: number; challenges_completed: number }) => {
+    const unlockedAchievementIds = userAchievements.map(ua => ua.achievement_id);
+    
     for (const achievement of achievements) {
       // Skip if user already has this achievement
-      if (userAchievements.includes(achievement.id)) continue;
+      if (unlockedAchievementIds.includes(achievement.id)) continue;
       
       let shouldUnlock = false;
       
       switch (achievement.requirement_type) {
-        case 'points':
+        case 'total_points':
           shouldUnlock = stats.total_points >= achievement.requirement_value;
           break;
-        case 'streak':
+        case 'streak_days':
           shouldUnlock = stats.current_streak >= achievement.requirement_value;
           break;
         case 'challenges_completed':

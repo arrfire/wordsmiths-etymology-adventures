@@ -77,7 +77,12 @@ serve(async (req) => {
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`OpenAI API error: ${response.status} - ${errorText}`);
+        console.error(`OpenAI API error: ${response.status} - ${errorText}`);
+        
+        if (response.status === 429) {
+          throw new Error('OpenAI quota exceeded. Please check your billing details.');
+        }
+        throw new Error(`OpenAI API error: ${response.status}`);
       }
 
       const data = await response.json();
@@ -87,7 +92,10 @@ serve(async (req) => {
         throw new Error('Invalid response from OpenAI API: ' + JSON.stringify(data));
       }
 
-      const challengeData = JSON.parse(data.choices[0].message.content);
+      // Clean up the content and parse JSON
+      const content = data.choices[0].message.content.trim();
+      const cleanContent = content.replace(/```json\n?|\n?```/g, '').trim();
+      const challengeData = JSON.parse(cleanContent);
       
       challenges.push({
         title: challengeData.title,

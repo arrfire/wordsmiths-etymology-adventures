@@ -191,9 +191,10 @@ const DailyChallengesPage = () => {
   const completedChallenges = userAttempts.filter(attempt => attempt.is_correct);
   const todayPoints = userAttempts.reduce((sum, attempt) => sum + attempt.points_earned, 0);
 
+  const unlockedAchievementIds = userAchievements?.map(ua => ua.achievement_id) || [];
   const achievementsWithStatus = achievements.map(achievement => ({
     ...achievement,
-    unlocked: userAchievements.includes(achievement.id)
+    unlocked: unlockedAchievementIds.includes(achievement.id)
   }));
 
   return (
