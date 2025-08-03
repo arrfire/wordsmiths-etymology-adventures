@@ -39,57 +39,115 @@ serve(async (req) => {
     const challenges = [];
     const difficulties = ['Easy', 'Medium', 'Hard'];
     
-    // Fallback challenges if OpenAI fails
-    const fallbackChallenges = [
-      {
-        title: "The Origin of 'Salary'",
-        description: "Discover the ancient roots of this common word",
-        question: "What is the etymological origin of the word 'salary'?",
-        options: [
-          "From Latin 'salarium', meaning payment for salt",
-          "From Greek 'salos', meaning wages",
-          "From Old French 'salaire', meaning reward",
-          "From Germanic 'sal', meaning payment"
-        ],
-        correct_answer: 0,
-        explanation: "The word 'salary' comes from Latin 'salarium', which was the money given to Roman soldiers to buy salt. Salt was so valuable in ancient times that it was sometimes used as currency.",
-        hint: "Think about a valuable white substance that was once used as currency.",
-        difficulty: 'Easy',
-        points: 10
-      },
-      {
-        title: "The Journey of 'Sandwich'",
-        description: "How a British nobleman gave his name to our favorite food",
-        question: "The word 'sandwich' is named after:",
-        options: [
-          "A town in England where it was invented",
-          "The Earl of Sandwich who ate meat between bread while gambling",
-          "A chef named William Sandwich",
-          "The sandwich-shaped bay where it originated"
-        ],
-        correct_answer: 1,
-        explanation: "The sandwich is named after John Montagu, 4th Earl of Sandwich, who in 1762 asked for meat between two pieces of bread so he could eat while continuing to play cards without getting his hands greasy.",
-        hint: "This food is named after a British aristocrat who loved gambling.",
-        difficulty: 'Medium',
-        points: 20
-      },
-      {
-        title: "The Complex Path of 'Serendipity'",
-        description: "A word born from Persian fairy tales",
-        question: "The word 'serendipity' was coined by Horace Walpole in 1754, inspired by:",
-        options: [
-          "A personal experience of fortunate discovery",
-          "The Persian fairy tale 'The Three Princes of Serendip'",
-          "An Arabic word meaning 'happy accident'",
-          "A Latin phrase meaning 'pleasant surprise'"
-        ],
-        correct_answer: 1,
-        explanation: "Horace Walpole coined 'serendipity' from the Persian fairy tale 'The Three Princes of Serendip' (now Sri Lanka), whose heroes were always making discoveries by accident and sagacity of things they were not looking for.",
-        hint: "It comes from an old name for Sri Lanka and involves three royal brothers.",
-        difficulty: 'Hard',
-        points: 30
-      }
+    // Diverse fallback challenges if OpenAI fails - rotated based on day of year
+    const allFallbackChallenges = [
+      // Set 1
+      [
+        {
+          title: "The Origin of 'Quarantine'",
+          description: "A word born from medieval plague prevention",
+          question: "What is the etymological origin of 'quarantine'?",
+          options: [
+            "From Italian 'quaranta giorni' meaning forty days",
+            "From Latin 'quartus' meaning fourth part",
+            "From French 'quarante' meaning fortress",
+            "From Arabic 'qaran' meaning isolation"
+          ],
+          correct_answer: 0,
+          explanation: "Quarantine comes from Italian 'quaranta giorni' (forty days), the period ships from plague-infected ports had to wait before entering Venice during the 14th century.",
+          hint: "Think about how long ships had to wait during medieval times.",
+          difficulty: 'Easy',
+          points: 10
+        },
+        {
+          title: "The Evolution of 'Robot'",
+          description: "From Czech theater to modern technology",
+          question: "The word 'robot' was first coined by:",
+          options: [
+            "A German engineer in 1920",
+            "Czech writer Karel Čapek in his 1920 play",
+            "An American inventor in 1921",
+            "A Russian scientist in 1919"
+          ],
+          correct_answer: 1,
+          explanation: "Karel Čapek coined 'robot' from Czech 'robota' (forced labor) in his 1920 play 'R.U.R.' about artificial beings created to serve humans.",
+          hint: "It comes from a Slavic word meaning forced work.",
+          difficulty: 'Medium',
+          points: 20
+        },
+        {
+          title: "The Mystical 'Algorithm'",
+          description: "From a Persian mathematician to computer science",
+          question: "The word 'algorithm' derives from:",
+          options: [
+            "Greek 'arithmos' meaning number",
+            "The name of Persian mathematician Al-Khwarizmi",
+            "Latin 'algere' meaning to calculate",
+            "Arabic 'al-jabr' meaning restoration"
+          ],
+          correct_answer: 1,
+          explanation: "Algorithm comes from 'Algoritmi', the Latinized name of 9th-century Persian mathematician Muhammad ibn Musa al-Khwarizmi, whose mathematical works introduced decimal notation to Europe.",
+          hint: "Named after a Persian scholar whose name was Latinized.",
+          difficulty: 'Hard',
+          points: 30
+        }
+      ],
+      // Set 2  
+      [
+        {
+          title: "The Story of 'Orange'",
+          description: "A color named after a fruit, not the other way around",
+          question: "The color orange got its name from:",
+          options: [
+            "The fruit orange, which came first",
+            "Old English 'or' meaning gold",
+            "Latin 'aurum' meaning bright",
+            "Sanskrit 'aruna' meaning dawn"
+          ],
+          correct_answer: 0,
+          explanation: "The color orange was named after the fruit. Before oranges came to Europe, the color was called 'red-yellow' or 'yellow-red'.",
+          hint: "The fruit existed before the color had a name.",
+          difficulty: 'Easy',
+          points: 10
+        },
+        {
+          title: "The Journey of 'Vanilla'",
+          description: "From tiny pods to common flavor",
+          question: "The word 'vanilla' comes from:",
+          options: [
+            "Latin 'vanitas' meaning emptiness",
+            "Spanish 'vainilla' meaning little pod",
+            "Arabic 'wan' meaning pale",
+            "French 'vanille' meaning sweet"
+          ],
+          correct_answer: 1,
+          explanation: "Vanilla comes from Spanish 'vainilla', meaning 'little pod', which is the diminutive of 'vaina' (pod or sheath), describing the shape of the vanilla fruit.",
+          hint: "It's about the shape of the spice container.",
+          difficulty: 'Medium',
+          points: 20
+        },
+        {
+          title: "The Ancient 'Pharmacy'",
+          description: "From Greek magic to modern medicine",
+          question: "The word 'pharmacy' originally referred to:",
+          options: [
+            "A place of healing",
+            "The use of drugs or medicine, including poison and magic",
+            "A storehouse for herbs",
+            "A physician's dwelling"
+          ],
+          correct_answer: 1,
+          explanation: "Pharmacy comes from Greek 'pharmakeia', which originally meant the use of drugs, whether for healing, harm, or magic. A 'pharmakon' could be medicine, poison, or magical charm.",
+          hint: "The original meaning included both healing and harmful substances.",
+          difficulty: 'Hard',
+          points: 30
+        }
+      ]
     ];
+    
+    // Select fallback set based on day of year to ensure variety
+    const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+    const fallbackChallenges = allFallbackChallenges[dayOfYear % allFallbackChallenges.length];
     
     for (let i = 0; i < 3; i++) {
       const difficulty = difficulties[i];
@@ -99,16 +157,21 @@ serve(async (req) => {
       // Try OpenAI first if API key is available
       if (openAIApiKey) {
         try {
-          const prompt = `Generate an etymology challenge for ${difficulty} level. Create a JSON object with:
+          const prompt = `Generate a UNIQUE etymology challenge for ${difficulty} level on ${today}. Use the current date for thematic inspiration and ensure maximum variety. Create a JSON object with:
           - title: A catchy title about the word's origin
-          - description: Brief description of what the challenge covers
+          - description: Brief description of what the challenge covers  
           - question: A multiple choice question about word etymology
           - options: Array of 4 possible answers
           - correct_answer: Index (0-3) of the correct answer
           - explanation: Detailed explanation of the correct answer and etymology
           - hint: A helpful hint without giving away the answer
           
-          Focus on interesting word origins, root meanings, language evolution, or historical context. Make it educational and engaging.`;
+          Requirements for uniqueness:
+          - Use words from diverse linguistic families (Germanic, Romance, Greek, Latin, Arabic, Sanskrit, Celtic, etc.)
+          - Vary topics: technology, nature, emotions, food, colors, professions, mythology, science
+          - Include different time periods and geographical origins
+          - Make each challenge completely different from common words like 'salary', 'sandwich', 'serendipity'
+          - Use the date ${today} to inspire seasonal, historical, or cultural themes`;
 
           const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
