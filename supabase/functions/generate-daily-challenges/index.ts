@@ -25,7 +25,7 @@ serve(async (req) => {
     // Check if challenges already exist for today (and ensure they aren't recent duplicates)
     const { data: existingToday } = await supabase
       .from('challenges')
-      .select('id, title')
+      .select('id, title, question')
       .eq('date_assigned', today);
 
     if (existingToday && existingToday.length > 0) {
@@ -37,12 +37,17 @@ serve(async (req) => {
 
       const { data: recent } = await supabase
         .from('challenges')
-        .select('title, date_assigned')
+        .select('title, question, date_assigned')
         .gte('date_assigned', fromDate)
         .lt('date_assigned', today);
 
-      const recentTitles = new Set((recent || []).map((c: any) => c.title));
-      const hasRecentDup = existingToday.some((c: any) => recentTitles.has(c.title));
+      const recentTitles = new Set((recent || []).map((c: any) => (c.title || '').trim()));
+      const recentQuestions = new Set((recent || []).map((c: any) => (c.question || '').trim()));
+
+      const hasRecentDup = existingToday.some((c: any) =>
+        recentTitles.has((c.title || '').trim()) ||
+        recentQuestions.has((c.question || '').trim())
+      );
 
       if (!hasRecentDup) {
         console.log('Challenges already exist for today and pass duplication check:', today);
@@ -51,7 +56,7 @@ serve(async (req) => {
         });
       }
 
-      console.log('Detected recent duplicate titles for today. Regenerating...', { today, recentWindowDays });
+      console.log('Detected recent duplicate titles/questions for today. Regenerating...', { today, recentWindowDays });
       await supabase.from('challenges').delete().eq('date_assigned', today);
     }
 
@@ -376,20 +381,21 @@ serve(async (req) => {
       .split('T')[0];
     const { data: recentForSelection } = await supabase
       .from('challenges')
-      .select('title, date_assigned')
+      .select('title, question, date_assigned')
       .gte('date_assigned', fromDate)
       .lt('date_assigned', today);
 
-    const recentTitlesSet = new Set((recentForSelection || []).map((c: any) => c.title));
+    const recentTitlesSet = new Set((recentForSelection || []).map((c: any) => (c.title || '').trim()));
+    const recentQuestionsSet = new Set((recentForSelection || []).map((c: any) => (c.question || '').trim()));
 
-    // Choose a fallback set that avoids recent titles if possible
+    // Choose a fallback set that avoids recent questions if possible
     const totalSets = allFallbackChallenges.length;
     const dayOfYear = Math.floor((new Date().getTime() - new Date(new Date().getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
     const candidates = Array.from({ length: totalSets }, (_, i) => (dayOfYear + i * 5) % totalSets);
 
     const conflictsCount = (setIdx: number) => {
-      const titles = allFallbackChallenges[setIdx].map((c: any) => c.title);
-      return titles.reduce((acc: number, t: string) => acc + (recentTitlesSet.has(t) ? 1 : 0), 0);
+      const questions = allFallbackChallenges[setIdx].map((c: any) => (c.question || '').trim());
+      return questions.reduce((acc: number, q: string) => acc + (recentQuestionsSet.has(q) ? 1 : 0), 0);
     };
 
     let chosenIndex = candidates.find((idx) => conflictsCount(idx) === 0);
@@ -397,8 +403,8 @@ serve(async (req) => {
       // If none are perfect, prefer least conflicts, then the one used longest ago
       const lastUse = new Map<number, string | null>();
       for (const idx of candidates) {
-        const titles = new Set(allFallbackChallenges[idx].map((c: any) => c.title));
-        const used = (recentForSelection || []).filter((c: any) => titles.has(c.title));
+        const setQuestions = new Set(allFallbackChallenges[idx].map((c: any) => (c.question || '').trim()));
+        const used = (recentForSelection || []).filter((c: any) => setQuestions.has((c.question || '').trim()));
         const oldest = used.length
           ? used.sort((a: any, b: any) => (a.date_assigned > b.date_assigned ? 1 : -1))[0].date_assigned
           : null;
