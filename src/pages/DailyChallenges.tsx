@@ -261,6 +261,16 @@ const DailyChallengesPage = () => {
               Next
               <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
+
+            {isToday && (
+              <Button 
+                size="sm"
+                onClick={generateChallenges}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+              >
+                Refresh Today’s Set
+              </Button>
+            )}
           </div>
         </div>
       </header>

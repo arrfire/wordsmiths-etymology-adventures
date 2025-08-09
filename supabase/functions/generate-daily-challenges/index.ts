@@ -21,18 +21,38 @@ serve(async (req) => {
 
   try {
     const today = new Date().toISOString().split('T')[0];
-    
-    // Check if challenges already exist for today
-    const { data: existingChallenges } = await supabase
+
+    // Check if challenges already exist for today (and ensure they aren't recent duplicates)
+    const { data: existingToday } = await supabase
       .from('challenges')
-      .select('id')
+      .select('id, title')
       .eq('date_assigned', today);
 
-    if (existingChallenges && existingChallenges.length > 0) {
-      console.log('Challenges already exist for today:', today);
-      return new Response(JSON.stringify({ message: 'Challenges already exist for today' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+    if (existingToday && existingToday.length > 0) {
+      // Look back a short window to avoid accidental repeats
+      const recentWindowDays = 14;
+      const fromDate = new Date(Date.now() - recentWindowDays * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split('T')[0];
+
+      const { data: recent } = await supabase
+        .from('challenges')
+        .select('title, date_assigned')
+        .gte('date_assigned', fromDate)
+        .lt('date_assigned', today);
+
+      const recentTitles = new Set((recent || []).map((c: any) => c.title));
+      const hasRecentDup = existingToday.some((c: any) => recentTitles.has(c.title));
+
+      if (!hasRecentDup) {
+        console.log('Challenges already exist for today and pass duplication check:', today);
+        return new Response(JSON.stringify({ message: 'Challenges already exist for today' }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      console.log('Detected recent duplicate titles for today. Regenerating...', { today, recentWindowDays });
+      await supabase.from('challenges').delete().eq('date_assigned', today);
     }
 
     // Generate 3 new challenges using OpenAI or fallback
@@ -349,14 +369,62 @@ serve(async (req) => {
       ]
     ];
     
-    // Select fallback set based on day of year to ensure variety
-    const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
-    const fallbackChallenges = allFallbackChallenges[dayOfYear % allFallbackChallenges.length];
+    // Compute recent titles to avoid repeats across the last 14 days
+    const recentWindowDays = 14;
+    const fromDate = new Date(Date.now() - recentWindowDays * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .split('T')[0];
+    const { data: recentForSelection } = await supabase
+      .from('challenges')
+      .select('title, date_assigned')
+      .gte('date_assigned', fromDate)
+      .lt('date_assigned', today);
+
+    const recentTitlesSet = new Set((recentForSelection || []).map((c: any) => c.title));
+
+    // Choose a fallback set that avoids recent titles if possible
+    const totalSets = allFallbackChallenges.length;
+    const dayOfYear = Math.floor((new Date().getTime() - new Date(new Date().getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
+    const candidates = Array.from({ length: totalSets }, (_, i) => (dayOfYear + i * 5) % totalSets);
+
+    const conflictsCount = (setIdx: number) => {
+      const titles = allFallbackChallenges[setIdx].map((c: any) => c.title);
+      return titles.reduce((acc: number, t: string) => acc + (recentTitlesSet.has(t) ? 1 : 0), 0);
+    };
+
+    let chosenIndex = candidates.find((idx) => conflictsCount(idx) === 0);
+    if (chosenIndex === undefined) {
+      // If none are perfect, prefer least conflicts, then the one used longest ago
+      const lastUse = new Map<number, string | null>();
+      for (const idx of candidates) {
+        const titles = new Set(allFallbackChallenges[idx].map((c: any) => c.title));
+        const used = (recentForSelection || []).filter((c: any) => titles.has(c.title));
+        const oldest = used.length
+          ? used.sort((a: any, b: any) => (a.date_assigned > b.date_assigned ? 1 : -1))[0].date_assigned
+          : null;
+        lastUse.set(idx, oldest);
+      }
+      candidates.sort((a, b) => {
+        const ca = conflictsCount(a);
+        const cb = conflictsCount(b);
+        if (ca !== cb) return ca - cb;
+        const la = lastUse.get(a);
+        const lb = lastUse.get(b);
+        if (la === lb) return 0;
+        if (la === null) return -1; // prefer never used
+        if (lb === null) return 1;
+        return la! < lb! ? -1 : 1; // prefer older
+      });
+      chosenIndex = candidates[0];
+    }
+
+    const fallbackChallenges = allFallbackChallenges[chosenIndex!];
     
     for (let i = 0; i < 3; i++) {
       const difficulty = difficulties[i];
       const points = difficulty === 'Easy' ? 10 : difficulty === 'Medium' ? 20 : 30;
       let challengeData;
+      let usedFallback = false;
       
       // Try OpenAI first if API key is available
       if (openAIApiKey) {
@@ -368,8 +436,8 @@ serve(async (req) => {
             .order('date_assigned', { ascending: false })
             .limit(50);
           
-          const usedTitles = existingChallenges?.map(c => c.title) || [];
-          const usedQuestions = existingChallenges?.map(c => c.question) || [];
+          const usedTitles = existingChallenges?.map((c: any) => c.title) || [];
+          const usedQuestions = existingChallenges?.map((c: any) => c.question) || [];
           
           const prompt = `Generate a COMPLETELY UNIQUE etymology challenge for ${difficulty} level on ${today}. 
 
@@ -433,18 +501,35 @@ Requirements for MAXIMUM uniqueness:
         } catch (error) {
           console.log(`OpenAI failed for ${difficulty}, using fallback: ${error.message}`);
           challengeData = fallbackChallenges[i];
+          usedFallback = true;
         }
       } else {
         console.log(`No OpenAI API key, using fallback for ${difficulty}`);
         challengeData = fallbackChallenges[i];
+        usedFallback = true;
+      }
+      
+      // If we used a fallback challenge, lightly shuffle the options to add variety
+      let options = [...challengeData.options];
+      let correctIndex = challengeData.correct_answer;
+      if (usedFallback) {
+        const mapped = options.map((opt: string, idx: number) => ({ opt, idx }));
+        for (let k = mapped.length - 1; k > 0; k--) {
+          const r = Math.floor(Math.random() * (k + 1));
+          const tmp = mapped[k];
+          mapped[k] = mapped[r];
+          mapped[r] = tmp;
+        }
+        options = mapped.map(m => m.opt);
+        correctIndex = mapped.findIndex(m => m.idx === correctIndex);
       }
       
       challenges.push({
         title: challengeData.title,
         description: challengeData.description,
         question: challengeData.question,
-        options: challengeData.options,
-        correct_answer: challengeData.correct_answer,
+        options,
+        correct_answer: correctIndex,
         explanation: challengeData.explanation,
         hint: challengeData.hint,
         difficulty: difficulty,
