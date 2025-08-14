@@ -29,35 +29,59 @@ serve(async (req) => {
       .eq('date_assigned', today);
 
     if (existingToday && existingToday.length > 0) {
-      // Look back a short window to avoid accidental repeats
-      const recentWindowDays = 14;
-      const fromDate = new Date(Date.now() - recentWindowDays * 24 * 60 * 60 * 1000)
+      // PRIORITY CHECK: Compare against yesterday first to prevent immediate repeats
+      const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000)
         .toISOString()
         .split('T')[0];
-
-      const { data: recent } = await supabase
+      
+      const { data: yesterdayChallenges } = await supabase
         .from('challenges')
-        .select('title, question, date_assigned')
-        .gte('date_assigned', fromDate)
-        .lt('date_assigned', today);
+        .select('title, question')
+        .eq('date_assigned', yesterday);
 
-      const recentTitles = new Set((recent || []).map((c: any) => (c.title || '').trim()));
-      const recentQuestions = new Set((recent || []).map((c: any) => (c.question || '').trim()));
+      // Check exact matches against yesterday
+      const yesterdayTitles = new Set((yesterdayChallenges || []).map((c: any) => (c.title || '').trim()));
+      const yesterdayQuestions = new Set((yesterdayChallenges || []).map((c: any) => (c.question || '').trim()));
 
-      const hasRecentDup = existingToday.some((c: any) =>
-        recentTitles.has((c.title || '').trim()) ||
-        recentQuestions.has((c.question || '').trim())
+      const matchesYesterday = existingToday.some((c: any) =>
+        yesterdayTitles.has((c.title || '').trim()) ||
+        yesterdayQuestions.has((c.question || '').trim())
       );
 
-      if (!hasRecentDup) {
-        console.log('Challenges already exist for today and pass duplication check:', today);
-        return new Response(JSON.stringify({ message: 'Challenges already exist for today' }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
+      if (matchesYesterday) {
+        console.log('CRITICAL: Today matches yesterday exactly! Force regenerating...', { today, yesterday });
+        await supabase.from('challenges').delete().eq('date_assigned', today);
+      } else {
+        // Look back further window to avoid other repeats
+        const recentWindowDays = 14;
+        const fromDate = new Date(Date.now() - recentWindowDays * 24 * 60 * 60 * 1000)
+          .toISOString()
+          .split('T')[0];
 
-      console.log('Detected recent duplicate titles/questions for today. Regenerating...', { today, recentWindowDays });
-      await supabase.from('challenges').delete().eq('date_assigned', today);
+        const { data: recent } = await supabase
+          .from('challenges')
+          .select('title, question, date_assigned')
+          .gte('date_assigned', fromDate)
+          .lt('date_assigned', today);
+
+        const recentTitles = new Set((recent || []).map((c: any) => (c.title || '').trim()));
+        const recentQuestions = new Set((recent || []).map((c: any) => (c.question || '').trim()));
+
+        const hasRecentDup = existingToday.some((c: any) =>
+          recentTitles.has((c.title || '').trim()) ||
+          recentQuestions.has((c.question || '').trim())
+        );
+
+        if (!hasRecentDup) {
+          console.log('Challenges already exist for today and pass duplication check:', today);
+          return new Response(JSON.stringify({ message: 'Challenges already exist for today' }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+
+        console.log('Detected recent duplicate titles/questions for today. Regenerating...', { today, recentWindowDays });
+        await supabase.from('challenges').delete().eq('date_assigned', today);
+      }
     }
 
     // Generate 3 new challenges using OpenAI or fallback
