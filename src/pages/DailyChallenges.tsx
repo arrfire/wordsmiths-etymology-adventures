@@ -6,6 +6,7 @@ import { ArrowLeft, Target, Trophy, Clock, Star, Flame, Award, CheckCircle, XCir
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useChallenges } from '@/hooks/useChallenges';
+import '@/utils/forceTriggerChallenges';
 import { toast } from 'sonner';
 import Footer from '@/components/Footer';
 import { supabase } from '@/integrations/supabase/client';
