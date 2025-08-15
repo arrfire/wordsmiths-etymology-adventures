@@ -2,498 +2,349 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0';
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     const today = new Date().toISOString().split('T')[0];
+    console.log(`Starting challenge generation for: ${today}`);
 
-    // Check if challenges already exist for today (and ensure they aren't recent duplicates)
+    // Check if challenges already exist for today
     const { data: existingToday } = await supabase
       .from('challenges')
-      .select('id, title, question')
+      .select('id, title, question, difficulty')
       .eq('date_assigned', today);
 
     if (existingToday && existingToday.length > 0) {
-      // PRIORITY CHECK: Compare against yesterday first to prevent immediate repeats
-      const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000)
-        .toISOString()
-        .split('T')[0];
+      console.log(`Found ${existingToday.length} existing challenges for today`);
       
-      const { data: yesterdayChallenges } = await supabase
+      // Check for exact duplicates with yesterday
+      const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      const { data: yesterdayData } = await supabase
         .from('challenges')
-        .select('title, question')
+        .select('title, question, difficulty')
         .eq('date_assigned', yesterday);
 
-      // Check exact matches against yesterday
-      const yesterdayTitles = new Set((yesterdayChallenges || []).map((c: any) => (c.title || '').trim()));
-      const yesterdayQuestions = new Set((yesterdayChallenges || []).map((c: any) => (c.question || '').trim()));
+      if (yesterdayData && yesterdayData.length > 0) {
+        const todayTitles = existingToday.map(c => c.title?.trim()).sort();
+        const yesterdayTitles = yesterdayData.map(c => c.title?.trim()).sort();
+        
+        if (JSON.stringify(todayTitles) === JSON.stringify(yesterdayTitles)) {
+          console.log(`CRITICAL: Today matches yesterday exactly! Force regenerating...`, { today, yesterday });
+          
+          // Delete today's challenges and regenerate
+          await supabase
+            .from('challenges')
+            .delete()
+            .eq('date_assigned', today);
+        } else {
+          // Check for any duplicates in recent history (last 21 days)
+          const recentDate = new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+          const { data: recentChallenges } = await supabase
+            .from('challenges')
+            .select('title, question, date_assigned')
+            .gte('date_assigned', recentDate)
+            .lt('date_assigned', today);
 
-      const matchesYesterday = existingToday.some((c: any) =>
-        yesterdayTitles.has((c.title || '').trim()) ||
-        yesterdayQuestions.has((c.question || '').trim())
-      );
+          const recentTitlesSet = new Set(recentChallenges?.map(c => c.title?.trim()) || []);
+          const todayHasDuplicates = existingToday.some(c => recentTitlesSet.has(c.title?.trim()));
 
-      if (matchesYesterday) {
-        console.log('CRITICAL: Today matches yesterday exactly! Force regenerating...', { today, yesterday });
-        await supabase.from('challenges').delete().eq('date_assigned', today);
-      } else {
-        // Look back further window to avoid other repeats
-        const recentWindowDays = 14;
-        const fromDate = new Date(Date.now() - recentWindowDays * 24 * 60 * 60 * 1000)
-          .toISOString()
-          .split('T')[0];
-
-        const { data: recent } = await supabase
-          .from('challenges')
-          .select('title, question, date_assigned')
-          .gte('date_assigned', fromDate)
-          .lt('date_assigned', today);
-
-        const recentTitles = new Set((recent || []).map((c: any) => (c.title || '').trim()));
-        const recentQuestions = new Set((recent || []).map((c: any) => (c.question || '').trim()));
-
-        const hasRecentDup = existingToday.some((c: any) =>
-          recentTitles.has((c.title || '').trim()) ||
-          recentQuestions.has((c.question || '').trim())
-        );
-
-        if (!hasRecentDup) {
-          console.log('Challenges already exist for today and pass duplication check:', today);
-          return new Response(JSON.stringify({ message: 'Challenges already exist for today' }), {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          });
+          if (todayHasDuplicates) {
+            console.log(`Found duplicates in recent history! Regenerating...`);
+            await supabase
+              .from('challenges')
+              .delete()
+              .eq('date_assigned', today);
+          } else {
+            console.log(`Challenges for ${today} are unique, no regeneration needed`);
+            return new Response(JSON.stringify({ 
+              message: 'Challenges already exist and are unique',
+              challenges: existingToday.length,
+              date: today 
+            }), {
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            });
+          }
         }
-
-        console.log('Detected recent duplicate titles/questions for today. Regenerating...', { today, recentWindowDays });
-        await supabase.from('challenges').delete().eq('date_assigned', today);
       }
     }
 
-    // Generate 3 new challenges using OpenAI or fallback
-    const challenges = [];
-    const difficulties = ['Easy', 'Medium', 'Hard'];
-    
-    // Enhanced fallback system with more variety - now includes 6 rotating sets
-    const allFallbackChallenges = [
-      // Set 1
+    // Extended fallback challenges with more variety
+    const extendedFallbackChallenges = [
+      // Set 1: Ancient civilizations
       [
         {
-          title: "The Mystery of 'Bankrupt'",
-          description: "From Italian markets to financial ruin",
-          question: "The word 'bankrupt' literally means:",
-          options: [
-            "Broken bench or table",
-            "Empty vault or treasury", 
-            "Failed merchant or trader",
-            "Lost money or fortune"
-          ],
+          title: "Ancient Greek Wisdom",
+          description: "Explore words from ancient Greek philosophy",
+          question: "The word 'philosophy' comes from Greek. What does it literally mean?",
+          options: ["Love of wisdom", "Study of nature", "Deep thinking", "Ancient knowledge"],
           correct_answer: 0,
-          explanation: "Bankrupt comes from Italian 'banca rotta' meaning 'broken bench.' When medieval Italian moneylenders could no longer do business, their trading benches were physically broken.",
-          hint: "Think about what Italian moneylenders sat behind in medieval markets.",
-          difficulty: 'Easy',
-          points: 10
+          explanation: "Philosophy comes from Greek 'philosophia': 'philos' (loving) + 'sophia' (wisdom), literally meaning 'love of wisdom'.",
+          hint: "Think about what philosophers are passionate about."
         },
         {
-          title: "The Colorful 'Magenta'",
-          description: "A color born from battlefield victory",
-          question: "The color magenta was named after:",
-          options: [
-            "A French chemist who discovered it",
-            "The Battle of Magenta in Italy (1859)",
-            "A type of flower called magenta",
-            "An ancient Greek word for purple"
-          ],
+          title: "Roman Heritage",
+          description: "Words inherited from the Roman Empire",
+          question: "The word 'salary' has an unusual origin. What was it originally related to?",
+          options: ["Gold coins", "Salt", "Work hours", "Military rank"],
           correct_answer: 1,
-          explanation: "Magenta was named after the Battle of Magenta in 1859, where French and Italian forces defeated Austria. The color was discovered shortly after and named to commemorate the victory.",
-          hint: "This color commemorates a 19th-century military victory.",
-          difficulty: 'Medium',
-          points: 20
+          explanation: "Salary comes from Latin 'salarium', related to 'sal' (salt). Roman soldiers were sometimes paid in salt or given money to buy salt.",
+          hint: "Think of a common seasoning that was once very valuable."
         },
         {
-          title: "The Elusive 'Abracadabra'",
-          description: "From ancient amulets to magic shows",
-          question: "The magic word 'abracadabra' likely originated from:",
-          options: [
-            "Aramaic phrase meaning 'I will create as I speak'",
-            "Latin 'abra cadaver' meaning 'open the corpse'",
-            "Hebrew 'ab, ben, ruach acadosch' meaning sacred trinity",
-            "Persian 'abraxas' meaning supreme being"
-          ],
-          correct_answer: 0,
-          explanation: "Abracadabra likely comes from Aramaic 'avra kehdabra' meaning 'I will create as I speak.' It was used as a magical incantation and written on amulets for protection against disease.",
-          hint: "This word is about the power of speech to create reality.",
-          difficulty: 'Hard',
-          points: 30
+          title: "Egyptian Mysteries",
+          description: "Words with ancient Egyptian roots",
+          question: "The word 'paper' traces back to which Egyptian plant?",
+          options: ["Reed grass", "Papyrus", "Palm leaves", "Cotton"],
+          correct_answer: 1,
+          explanation: "Paper comes from Latin 'papyrus', named after the papyrus plant that ancient Egyptians used to make writing material.",
+          hint: "The word itself contains the name of the plant."
         }
       ],
-      // Set 2  
+      // Set 2: Medieval times
       [
         {
-          title: "The Theatrical 'Thespian'",
-          description: "From ancient Greek innovation to modern acting",
-          question: "The word 'thespian' (meaning actor) comes from:",
-          options: [
-            "Thespis, the first actor in ancient Greece",
-            "Greek 'thespian' meaning dramatic performance",
-            "The city of Thespia where theater began",
-            "Goddess Thespia who inspired performances"
-          ],
-          correct_answer: 0,
-          explanation: "Thespian comes from Thespis, a 6th-century BC Greek who is traditionally regarded as the first actor. Before him, Greek drama only had choruses - he introduced individual speaking parts.",
-          hint: "Named after the very first person to step out of the chorus.",
-          difficulty: 'Easy',
-          points: 10
-        },
-        {
-          title: "The Destructive 'Vandalism'",
-          description: "From Germanic tribe to modern destruction",
-          question: "The word 'vandalism' comes from:",
-          options: [
-            "Latin 'vandare' meaning to destroy",
-            "The Vandals, a Germanic tribe",
-            "Dutch 'vandaal' meaning troublemaker",
-            "Viking 'vandal' meaning raider"
-          ],
+          title: "Medieval Markets",
+          description: "Commerce words from the Middle Ages",
+          question: "The word 'bankrupt' has a physical origin. What does it literally mean?",
+          options: ["Empty vault", "Broken bench", "Failed merchant", "Lost money"],
           correct_answer: 1,
-          explanation: "Vandalism comes from the Vandals, a Germanic tribe that sacked Rome in 455 AD. The term was popularized during the French Revolution to describe the deliberate destruction of cultural artifacts.",
-          hint: "Named after a tribe that famously sacked an ancient capital.",
-          difficulty: 'Medium',
-          points: 20
+          explanation: "Bankrupt comes from Italian 'banca rotta' meaning 'broken bench'. Medieval money changers used benches, which were broken when they failed.",
+          hint: "Think about furniture used by medieval merchants."
         },
         {
-          title: "The Precise 'Laconic'",
-          description: "From Spartan brevity to modern speech",
-          question: "The word 'laconic' (meaning brief in speech) refers to:",
-          options: [
-            "Laconia, the region of ancient Sparta",
-            "Latin 'laconicus' meaning short and sweet",
-            "Greek philosopher Lacon who spoke little",
-            "Ancient Greek 'lakos' meaning few words"
-          ],
-          correct_answer: 0,
-          explanation: "Laconic refers to Laconia, the region of ancient Sparta. Spartans were famous for their extremely brief, pointed speech. When Philip of Macedon threatened invasion with a long message, Sparta replied with just one word: 'If.'",
-          hint: "Think of ancient Greek warriors known for speaking very few words.",
-          difficulty: 'Hard',
-          points: 30
+          title: "Knight's Code",
+          description: "Chivalric terms and their origins",
+          question: "The word 'courtesy' is connected to which medieval location?",
+          options: ["Castle", "Court", "Courtyard", "Countryside"],
+          correct_answer: 1,
+          explanation: "Courtesy comes from Old French 'courtoisie', referring to the polite behavior expected at royal courts.",
+          hint: "Where would nobles gather to meet the king?"
+        },
+        {
+          title: "Plague Times",
+          description: "Words from medieval medical practices",
+          question: "The word 'quarantine' originally referred to how many days?",
+          options: ["Thirty", "Forty", "Twenty", "Ten"],
+          correct_answer: 1,
+          explanation: "Quarantine comes from Italian 'quaranta giorni' meaning 'forty days' - the period ships were isolated during plague times.",
+          hint: "The word itself contains a number in Italian."
         }
       ],
-      // Set 3
+      // Set 3: Exploration age
       [
         {
-          title: "The Festive 'Carnival'",
-          description: "From medieval fasting to modern celebration",
-          question: "The word 'carnival' originally meant:",
-          options: [
-            "Farewell to meat",
-            "Time of masks and costumes",
-            "Festival of lights and music",
-            "Season of dancing and joy"
-          ],
+          title: "Nautical Knowledge",
+          description: "Seafaring terms and their maritime origins",
+          question: "The word 'companion' has a food-related origin. What does it mean?",
+          options: ["Bread sharer", "Meal partner", "Food provider", "Kitchen helper"],
           correct_answer: 0,
-          explanation: "Carnival comes from Italian 'carnevale,' from 'carne vale' meaning 'farewell to meat.' It was the last celebration before Lent, when meat was forbidden for 40 days.",
-          hint: "This celebration happened before a long period of dietary restriction.",
-          difficulty: 'Easy',
-          points: 10
+          explanation: "Companion comes from Latin 'com' (with) + 'panis' (bread), literally meaning 'one who shares bread'.",
+          hint: "Think about what sailors would share during long voyages."
         },
         {
-          title: "The Maritime 'Admiral'",
-          description: "From Arabic seas to naval command",
-          question: "The naval rank 'admiral' comes from:",
-          options: [
-            "Latin 'admiralis' meaning sea commander",
-            "Arabic 'amir al-bahr' meaning commander of the sea",
-            "Old French 'amiral' meaning ship captain",
-            "Norman 'admiral' meaning fleet leader"
-          ],
-          correct_answer: 1,
-          explanation: "Admiral comes from Arabic 'amir al-bahr' meaning 'commander of the sea.' The word entered European languages through contact with Arab naval forces in the Mediterranean.",
-          hint: "This naval term has its origins in the language of desert peoples who became seafaring traders.",
-          difficulty: 'Medium',
-          points: 20
-        },
-        {
-          title: "The Scholarly 'Pedagogue'",
-          description: "From Greek servants to modern educators",
-          question: "In ancient Greece, a 'pedagogue' was originally:",
-          options: [
-            "A wise teacher or philosopher",
-            "A slave who escorted children to school",
-            "A school building or institution",
-            "A method of teaching children"
-          ],
-          correct_answer: 1,
-          explanation: "Pedagogue comes from Greek 'paidagogos' - 'paidos' (child) + 'agogos' (leader). Originally, it was a slave whose job was to escort children to school and supervise them, not teach them.",
-          hint: "This person's original job was transportation and supervision, not education.",
-          difficulty: 'Hard',
-          points: 30
-        }
-      ],
-      // Set 4
-      [
-        {
-          title: "The Shocking 'Disaster'",
-          description: "From unfavorable stars to modern catastrophe",
-          question: "The word 'disaster' literally means:",
-          options: [
-            "Bad or evil star",
-            "Great destruction or ruin",
-            "Unexpected terrible event",
-            "Complete failure or collapse"
-          ],
-          correct_answer: 0,
-          explanation: "Disaster comes from Italian 'disastro,' from 'dis-' (apart, away) + 'astro' (star). It originally meant an unfavorable astrological aspect, when the stars were misaligned.",
-          hint: "Ancient people believed celestial bodies influenced earthly events.",
-          difficulty: 'Easy',
-          points: 10
-        },
-        {
-          title: "The Practical 'Candidate'",
-          description: "From Roman togas to modern politics",
-          question: "Roman 'candidates' got their name because they:",
-          options: [
-            "Carried candles during campaigns",
-            "Wore bright white togas",
-            "Stood on raised platforms",
-            "Spoke in public forums"
-          ],
-          correct_answer: 1,
-          explanation: "Candidate comes from Latin 'candidatus' meaning 'clothed in white.' Roman political candidates wore bright white togas to symbolize their purity and make them easily recognizable to voters.",
-          hint: "Think about what color Roman politicians wore to stand out in crowds.",
-          difficulty: 'Medium',
-          points: 20
-        },
-        {
-          title: "The Ancient 'Sarcophagus'",
-          description: "From flesh-eating stone to eternal rest",
-          question: "The word 'sarcophagus' literally means:",
-          options: [
-            "Stone burial chamber",
-            "Eternal resting place",
-            "Flesh-eating stone",
-            "Sacred burial vessel"
-          ],
+          title: "Spice Routes",
+          description: "Words from the global spice trade",
+          question: "The word 'orange' comes from which language family?",
+          options: ["Latin", "Germanic", "Sanskrit", "Celtic"],
           correct_answer: 2,
-          explanation: "Sarcophagus comes from Greek 'sarko' (flesh) + 'phagus' (eating). Greeks believed certain limestone would consume the flesh of corpses, leaving only bones - hence 'flesh-eating stone.'",
-          hint: "The Greeks thought this stone would consume part of what was placed inside it.",
-          difficulty: 'Hard',
-          points: 30
+          explanation: "Orange traces back to Sanskrit 'naranga', traveling through Persian and Arabic before reaching European languages.",
+          hint: "This fruit traveled the same route as many spices from the East."
+        },
+        {
+          title: "New World Discoveries",
+          description: "Words from the Age of Exploration",
+          question: "The word 'chocolate' comes from which indigenous language?",
+          options: ["Mayan", "Aztec", "Incan", "Olmec"],
+          correct_answer: 1,
+          explanation: "Chocolate comes from Nahuatl (Aztec) 'chocolatl', referring to a bitter drink made from cacao beans.",
+          hint: "Think of the civilization that first cultivated cacao in Mexico."
         }
       ],
-      // Set 5
+      // Set 4: Industrial revolution
       [
         {
-          title: "The Peaceful 'Pacific'",
-          description: "From Magellan's calm seas to ocean names",
-          question: "The Pacific Ocean got its name because:",
-          options: [
-            "It was peaceful when first explored",
-            "It had fewer storms than other oceans",
-            "Explorer Magellan found calm waters",
-            "It connected peaceful nations"
-          ],
+          title: "Steam Age",
+          description: "Words from the industrial revolution",
+          question: "The word 'sabotage' originated from which object?",
+          options: ["Wooden shoes", "Factory tools", "Steam pipes", "Coal shovels"],
+          correct_answer: 0,
+          explanation: "Sabotage comes from French 'sabot' (wooden shoe). Workers allegedly threw their shoes into machinery to protest.",
+          hint: "Think about footwear that might damage delicate machinery."
+        },
+        {
+          title: "Railroad Revolution",
+          description: "Transportation terms from the railway boom",
+          question: "The phrase 'off the rails' originally described what?",
+          options: ["Trains derailing", "Crazy behavior", "Lost cargo", "Broken schedules"],
+          correct_answer: 0,
+          explanation: "Originally literal - trains going 'off the rails' meant derailment. Later it became metaphorical for erratic behavior.",
+          hint: "Think literally about what happens when trains leave their tracks."
+        },
+        {
+          title: "Factory Life",
+          description: "Words from early industrial workplaces",
+          question: "The word 'deadline' has a grim historical origin. What was it originally?",
+          options: ["Work schedule", "Prison boundary", "Factory rule", "Death sentence"],
+          correct_answer: 1,
+          explanation: "Deadline originally referred to a line around Civil War prisons - crossing it meant death by shooting.",
+          hint: "Think about a literal line that meant life or death."
+        }
+      ],
+      // Set 5: Scientific revolution
+      [
+        {
+          title: "Scientific Method",
+          description: "Words from the birth of modern science",
+          question: "The word 'vaccine' comes from which animal?",
+          options: ["Sheep", "Cow", "Horse", "Pig"],
+          correct_answer: 1,
+          explanation: "Vaccine comes from Latin 'vacca' (cow). Edward Jenner used cowpox to immunize against smallpox.",
+          hint: "Think about the animal that provided the first immunity breakthrough."
+        },
+        {
+          title: "Astronomical Terms",
+          description: "Words from studying the heavens",
+          question: "The word 'satellite' originally meant what?",
+          options: ["Star follower", "Orbiting body", "Attendant", "Space object"],
           correct_answer: 2,
-          explanation: "Portuguese explorer Ferdinand Magellan named it 'Mar Pacifico' (peaceful sea) in 1520 because he encountered calm waters after the rough passage through the strait at the southern tip of South America.",
-          hint: "A famous explorer experienced unusually calm conditions compared to his previous journey.",
-          difficulty: 'Easy',
-          points: 10
+          explanation: "Satellite comes from Latin 'satelles' meaning attendant or bodyguard - one who follows and serves.",
+          hint: "Think about someone who follows and serves a master."
         },
         {
-          title: "The Musical 'Symphony'",
-          description: "From Greek harmony to orchestral masterpiece",
-          question: "The word 'symphony' originally meant:",
-          options: [
-            "Large musical composition",
-            "Sounding together in harmony",
-            "Complex orchestral arrangement",
-            "Multiple instruments playing"
-          ],
-          correct_answer: 1,
-          explanation: "Symphony comes from Greek 'symphonia' - 'syn' (together) + 'phone' (sound). It originally meant any harmonious combination of sounds, not specifically the musical form we know today.",
-          hint: "Break down this Greek word into its parts about sound.",
-          difficulty: 'Medium',
-          points: 20
-        },
-        {
-          title: "The Mysterious 'Buccaneer'",
-          description: "From Caribbean meat-smoking to piracy",
-          question: "Buccaneers originally got their name from:",
-          options: [
-            "Their ships called 'buccans'",
-            "Smoking meat on wooden frames called 'boucans'",
-            "A type of gun called a 'buccaneer'",
-            "The island of Buccanea where they lived"
-          ],
-          correct_answer: 1,
-          explanation: "Buccaneer comes from French 'boucanier,' referring to people who smoked meat on wooden frames called 'boucans.' These Caribbean hunters later turned to piracy against Spanish ships.",
-          hint: "Before they became pirates, these people prepared food using a specific smoking method.",
-          difficulty: 'Hard',
-          points: 30
+          title: "Medical Breakthroughs",
+          description: "Terms from advancing medical knowledge",
+          question: "The word 'influenza' originally blamed what for causing illness?",
+          options: ["Bad air", "Evil spirits", "Star influence", "Cold weather"],
+          correct_answer: 2,
+          explanation: "Influenza comes from Italian, meaning 'influence of the stars' - people thought celestial bodies caused epidemics.",
+          hint: "Ancient people looked to the sky to explain diseases."
         }
       ],
-      // Set 6
+      // Set 6: Modern technology
       [
         {
-          title: "The Explosive 'Sabotage'",
-          description: "From wooden shoes to industrial disruption",
-          question: "The word 'sabotage' supposedly comes from:",
-          options: [
-            "French sabot (wooden shoes) thrown into machinery",
-            "Italian sabotaggio meaning deliberate damage",
-            "Spanish sabotear meaning to hinder",
-            "German sabotage meaning workplace rebellion"
-          ],
-          correct_answer: 0,
-          explanation: "Sabotage comes from French 'sabot' (wooden shoe). Legend says French workers threw their wooden shoes into machinery to stop production, though historians debate this origin. The word entered English around 1910 during industrial conflicts.",
-          hint: "Think about what French workers might throw into machines to stop them.",
-          difficulty: 'Easy',
-          points: 10
+          title: "Digital Age",
+          description: "Words from the computer revolution",
+          question: "The word 'bug' in computing came from what literal discovery?",
+          options: ["Ant in circuitry", "Moth in relay", "Spider web", "Beetle damage"],
+          correct_answer: 1,
+          explanation: "Grace Hopper found an actual moth stuck in a computer relay in 1947, coining the term 'bug' for computer problems.",
+          hint: "Think about a specific insect found in early computer hardware."
         },
         {
-          title: "The Scholarly 'Trivia'",
-          description: "From Roman crossroads to modern knowledge games",
-          question: "The word 'trivia' originally referred to:",
-          options: [
-            "Three-way road intersections in Rome",
-            "Minor academic subjects",
-            "Unimportant daily conversations",
-            "Simple arithmetic with three numbers"
-          ],
-          correct_answer: 0,
-          explanation: "Trivia comes from Latin 'trivium' meaning a place where three roads meet. In medieval education, the trivium was the foundation curriculum (grammar, logic, rhetoric), considered basic knowledge - hence 'trivial' meant commonplace.",
-          hint: "Romans would meet and chat where three roads crossed.",
-          difficulty: 'Medium',
-          points: 20
+          title: "Internet Era",
+          description: "Terms from the world wide web",
+          question: "The word 'spam' (unwanted email) comes from which source?",
+          options: ["Computer acronym", "Monty Python sketch", "Early hacker name", "Technical term"],
+          correct_answer: 1,
+          explanation: "Spam comes from a Monty Python sketch where 'SPAM' (the meat) is repeated annoyingly - like unwanted emails.",
+          hint: "Think about a famous British comedy group."
         },
         {
-          title: "The Noble 'Sinister'",
-          description: "From left-handed omens to evil intentions",
-          question: "The word 'sinister' originally meant:",
-          options: [
-            "Left-handed or on the left side",
-            "Evil or wicked by nature",
-            "Hidden or secretive",
-            "Dark or shadowy"
-          ],
-          correct_answer: 0,
-          explanation: "Sinister comes from Latin 'sinister' meaning 'left' or 'on the left side.' In Roman augury, omens appearing on the left were considered unlucky, while those on the right were favorable. This association gave 'sinister' its modern meaning of evil.",
-          hint: "Romans considered one direction unlucky for bird omens.",
-          difficulty: 'Hard',
-          points: 30
+          title: "Mobile Revolution",
+          description: "Words from portable technology",
+          question: "The word 'bluetooth' is named after whom?",
+          options: ["Tech company founder", "Viking king", "Blue-toothed scientist", "Software engineer"],
+          correct_answer: 1,
+          explanation: "Bluetooth is named after King Harald 'Bluetooth' Gormsson, who united Danish tribes like the technology unites devices.",
+          hint: "Think about a historical ruler known for unifying people."
         }
       ]
     ];
-    
-    // Compute recent titles to avoid repeats across the last 14 days
-    const recentWindowDays = 14;
-    const fromDate = new Date(Date.now() - recentWindowDays * 24 * 60 * 60 * 1000)
-      .toISOString()
-      .split('T')[0];
-    const { data: recentForSelection } = await supabase
+
+    const difficulties = ['Easy', 'Medium', 'Hard'];
+    const challenges = [];
+
+    // Get all recent challenges to avoid duplicates (last 30 days)
+    const recentDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    const { data: allRecentChallenges } = await supabase
       .from('challenges')
       .select('title, question, date_assigned')
-      .gte('date_assigned', fromDate)
-      .lt('date_assigned', today);
+      .gte('date_assigned', recentDate);
 
-    const recentTitlesSet = new Set((recentForSelection || []).map((c: any) => (c.title || '').trim()));
-    const recentQuestionsSet = new Set((recentForSelection || []).map((c: any) => (c.question || '').trim()));
+    const recentTitlesSet = new Set(allRecentChallenges?.map(c => c.title?.trim()) || []);
+    const recentQuestionsSet = new Set(allRecentChallenges?.map(c => c.question?.trim()) || []);
 
-    // Choose a fallback set that avoids recent questions if possible
-    const totalSets = allFallbackChallenges.length;
-    const dayOfYear = Math.floor((new Date().getTime() - new Date(new Date().getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
-    const candidates = Array.from({ length: totalSets }, (_, i) => (dayOfYear + i * 5) % totalSets);
-
-    const conflictsCount = (setIdx: number) => {
-      const questions = allFallbackChallenges[setIdx].map((c: any) => (c.question || '').trim());
-      return questions.reduce((acc: number, q: string) => acc + (recentQuestionsSet.has(q) ? 1 : 0), 0);
-    };
-
-    let chosenIndex = candidates.find((idx) => conflictsCount(idx) === 0);
-    if (chosenIndex === undefined) {
-      // If none are perfect, prefer least conflicts, then the one used longest ago
-      const lastUse = new Map<number, string | null>();
-      for (const idx of candidates) {
-        const setQuestions = new Set(allFallbackChallenges[idx].map((c: any) => (c.question || '').trim()));
-        const used = (recentForSelection || []).filter((c: any) => setQuestions.has((c.question || '').trim()));
-        const oldest = used.length
-          ? used.sort((a: any, b: any) => (a.date_assigned > b.date_assigned ? 1 : -1))[0].date_assigned
-          : null;
-        lastUse.set(idx, oldest);
+    // Find a fallback set with no recent conflicts
+    let chosenSetIndex = -1;
+    const maxAttempts = extendedFallbackChallenges.length * 2;
+    
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      const testIndex = (Math.floor(Date.now() / 1000) + attempt * 7) % extendedFallbackChallenges.length;
+      const testSet = extendedFallbackChallenges[testIndex];
+      
+      const hasConflict = testSet.some(challenge => 
+        recentTitlesSet.has(challenge.title?.trim()) || 
+        recentQuestionsSet.has(challenge.question?.trim())
+      );
+      
+      if (!hasConflict) {
+        chosenSetIndex = testIndex;
+        console.log(`Selected fallback set ${testIndex} with no conflicts`);
+        break;
       }
-      candidates.sort((a, b) => {
-        const ca = conflictsCount(a);
-        const cb = conflictsCount(b);
-        if (ca !== cb) return ca - cb;
-        const la = lastUse.get(a);
-        const lb = lastUse.get(b);
-        if (la === lb) return 0;
-        if (la === null) return -1; // prefer never used
-        if (lb === null) return 1;
-        return la! < lb! ? -1 : 1; // prefer older
-      });
-      chosenIndex = candidates[0];
     }
 
-    const fallbackChallenges = allFallbackChallenges[chosenIndex!];
-    
+    // If all sets have conflicts, choose the one used longest ago
+    if (chosenSetIndex === -1) {
+      console.log(`All sets have conflicts, choosing least recently used`);
+      const setUsage = new Map();
+      
+      for (let i = 0; i < extendedFallbackChallenges.length; i++) {
+        const setTitles = new Set(extendedFallbackChallenges[i].map(c => c.title?.trim()));
+        const recentUsage = allRecentChallenges?.filter(c => setTitles.has(c.title?.trim())) || [];
+        const oldestUse = recentUsage.length > 0 
+          ? Math.min(...recentUsage.map(c => new Date(c.date_assigned).getTime()))
+          : 0;
+        setUsage.set(i, oldestUse);
+      }
+      
+      chosenSetIndex = Array.from(setUsage.entries())
+        .sort(([,a], [,b]) => a - b)[0][0];
+    }
+
+    const selectedSet = extendedFallbackChallenges[chosenSetIndex];
+    console.log(`Using fallback set ${chosenSetIndex}`);
+
+    // Generate challenges
     for (let i = 0; i < 3; i++) {
       const difficulty = difficulties[i];
       const points = difficulty === 'Easy' ? 10 : difficulty === 'Medium' ? 20 : 30;
       let challengeData;
       let usedFallback = false;
-      
-      // Try OpenAI first if API key is available
+
+      // Try OpenAI first if available
       if (openAIApiKey) {
         try {
-          // Query existing challenges to avoid duplicates
-          const { data: existingChallenges } = await supabase
-            .from('challenges')
-            .select('title, question')
-            .order('date_assigned', { ascending: false })
-            .limit(50);
-          
-          const usedTitles = existingChallenges?.map((c: any) => c.title) || [];
-          const usedQuestions = existingChallenges?.map((c: any) => c.question) || [];
-          
-          const prompt = `Generate a COMPLETELY UNIQUE etymology challenge for ${difficulty} level on ${today}. 
+          const prompt = `Generate a COMPLETELY UNIQUE etymology challenge for ${difficulty} level.
 
-CRITICAL: Avoid these already used titles and topics:
-${usedTitles.join(', ')}
+CRITICAL: Create something totally different from recent challenges.
+Recent titles to AVOID: ${Array.from(recentTitlesSet).slice(0, 10).join(', ')}
 
-CRITICAL: Avoid these already used questions:
-${usedQuestions.slice(0, 10).join(' | ')}
-
-Create a JSON object with:
-- title: A catchy title about the word's origin (must be completely different from the avoided list)
-- description: Brief description of what the challenge covers  
-- question: A multiple choice question about word etymology (must be unique)
+Generate JSON with:
+- title: Catchy title about word origin (must be unique)
+- description: Brief description 
+- question: Multiple choice question about etymology
 - options: Array of 4 possible answers
-- correct_answer: Index (0-3) of the correct answer
-- explanation: Detailed explanation of the correct answer and etymology
-- hint: A helpful hint without giving away the answer
+- correct_answer: Index (0-3) of correct answer
+- explanation: Detailed explanation
+- hint: Helpful hint
 
-Requirements for MAXIMUM uniqueness:
-- Choose words from unexplored linguistic families (Celtic, Nordic, Slavic, Semitic, Austronesian, etc.)
-- Explore unusual topics: weather, astronomy, architecture, textiles, weapons, navigation, agriculture, medicine
-- Focus on words with surprising origins or cultural migrations
-- Include words that changed meaning dramatically over time
-- Use the date ${today} to inspire thematic connections (day of week, season, historical events)
-- Pick words that most people use but don't know the etymology of
-- Avoid any overlap with previously generated challenges`;
+Focus on: unusual word origins, surprising etymology, cultural word migrations, words that changed meaning dramatically.`;
 
           const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
@@ -504,56 +355,50 @@ Requirements for MAXIMUM uniqueness:
             body: JSON.stringify({
               model: 'gpt-4o-mini',
               messages: [
-                { role: 'system', content: 'You are an expert etymologist and educator. Generate educational etymology challenges. Respond only with valid JSON.' },
+                { role: 'system', content: 'You are an expert etymologist. Generate educational etymology challenges. Respond only with valid JSON.' },
                 { role: 'user', content: prompt }
               ],
-              temperature: 0.8,
+              temperature: 0.9,
             }),
           });
 
           if (response.ok) {
             const data = await response.json();
-            
-            if (data.choices && data.choices[0] && data.choices[0].message) {
-              // Clean up the content and parse JSON
-              const content = data.choices[0].message.content.trim();
-              const cleanContent = content.replace(/```json\n?|\n?```/g, '').trim();
-              challengeData = JSON.parse(cleanContent);
+            if (data.choices?.[0]?.message?.content) {
+              const content = data.choices[0].message.content.trim().replace(/```json\n?|\n?```/g, '').trim();
+              challengeData = JSON.parse(content);
               console.log(`Generated OpenAI challenge for ${difficulty}`);
             } else {
               throw new Error('Invalid OpenAI response structure');
             }
           } else {
-            const errorText = await response.text();
-            console.error(`OpenAI API error: ${response.status} - ${errorText}`);
             throw new Error(`OpenAI API error: ${response.status}`);
           }
         } catch (error) {
           console.log(`OpenAI failed for ${difficulty}, using fallback: ${error.message}`);
-          challengeData = fallbackChallenges[i];
+          challengeData = selectedSet[i];
           usedFallback = true;
         }
       } else {
         console.log(`No OpenAI API key, using fallback for ${difficulty}`);
-        challengeData = fallbackChallenges[i];
+        challengeData = selectedSet[i];
         usedFallback = true;
       }
-      
-      // If we used a fallback challenge, lightly shuffle the options to add variety
+
+      // Shuffle options if using fallback
       let options = [...challengeData.options];
       let correctIndex = challengeData.correct_answer;
-      if (usedFallback) {
-        const mapped = options.map((opt: string, idx: number) => ({ opt, idx }));
-        for (let k = mapped.length - 1; k > 0; k--) {
-          const r = Math.floor(Math.random() * (k + 1));
-          const tmp = mapped[k];
-          mapped[k] = mapped[r];
-          mapped[r] = tmp;
-        }
-        options = mapped.map(m => m.opt);
-        correctIndex = mapped.findIndex(m => m.idx === correctIndex);
-      }
       
+      if (usedFallback) {
+        const shuffleMap = options.map((opt, idx) => ({ opt, idx }));
+        for (let k = shuffleMap.length - 1; k > 0; k--) {
+          const j = Math.floor(Math.random() * (k + 1));
+          [shuffleMap[k], shuffleMap[j]] = [shuffleMap[j], shuffleMap[k]];
+        }
+        options = shuffleMap.map(m => m.opt);
+        correctIndex = shuffleMap.findIndex(m => m.idx === correctIndex);
+      }
+
       challenges.push({
         title: challengeData.title,
         description: challengeData.description,
@@ -569,7 +414,7 @@ Requirements for MAXIMUM uniqueness:
       });
     }
 
-    // Insert challenges into database
+    // Insert challenges
     const { data, error } = await supabase
       .from('challenges')
       .insert(challenges);
@@ -584,7 +429,8 @@ Requirements for MAXIMUM uniqueness:
     return new Response(JSON.stringify({ 
       message: 'Successfully generated daily challenges',
       challenges: challenges.length,
-      date: today 
+      date: today,
+      set_used: chosenSetIndex
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
