@@ -279,12 +279,13 @@ serve(async (req) => {
     const recentTitlesSet = new Set(allRecentChallenges?.map(c => c.title?.trim()) || []);
     const recentQuestionsSet = new Set(allRecentChallenges?.map(c => c.question?.trim()) || []);
 
-    // Find a fallback set with no recent conflicts
+    // Find a fallback set with no recent conflicts using proper rotation
     let chosenSetIndex = -1;
-    const maxAttempts = extendedFallbackChallenges.length * 2;
+    const todayNumber = Math.floor(new Date(today).getTime() / (1000 * 60 * 60 * 24));
     
-    for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      const testIndex = (Math.floor(Date.now() / 1000) + attempt * 7) % extendedFallbackChallenges.length;
+    // Try sets in deterministic but rotating order
+    for (let attempt = 0; attempt < extendedFallbackChallenges.length; attempt++) {
+      const testIndex = (todayNumber + attempt) % extendedFallbackChallenges.length;
       const testSet = extendedFallbackChallenges[testIndex];
       
       const hasConflict = testSet.some(challenge => 
@@ -294,27 +295,33 @@ serve(async (req) => {
       
       if (!hasConflict) {
         chosenSetIndex = testIndex;
-        console.log(`Selected fallback set ${testIndex} with no conflicts`);
+        console.log(`Selected fallback set ${testIndex} with no conflicts (rotation attempt ${attempt})`);
         break;
       }
     }
 
-    // If all sets have conflicts, choose the one used longest ago
+    // If all sets have conflicts, find the one used longest ago
     if (chosenSetIndex === -1) {
-      console.log(`All sets have conflicts, choosing least recently used`);
-      const setUsage = new Map();
+      console.log(`All sets have conflicts, finding least recently used`);
+      const setLastUsed = new Map();
       
       for (let i = 0; i < extendedFallbackChallenges.length; i++) {
         const setTitles = new Set(extendedFallbackChallenges[i].map(c => c.title?.trim()));
         const recentUsage = allRecentChallenges?.filter(c => setTitles.has(c.title?.trim())) || [];
-        const oldestUse = recentUsage.length > 0 
-          ? Math.min(...recentUsage.map(c => new Date(c.date_assigned).getTime()))
-          : 0;
-        setUsage.set(i, oldestUse);
+        
+        if (recentUsage.length === 0) {
+          setLastUsed.set(i, new Date('1970-01-01').getTime()); // Never used
+        } else {
+          const mostRecentUse = Math.max(...recentUsage.map(c => new Date(c.date_assigned).getTime()));
+          setLastUsed.set(i, mostRecentUse);
+        }
       }
       
-      chosenSetIndex = Array.from(setUsage.entries())
+      // Choose the set that was used longest ago
+      chosenSetIndex = Array.from(setLastUsed.entries())
         .sort(([,a], [,b]) => a - b)[0][0];
+      
+      console.log(`Selected set ${chosenSetIndex} as least recently used`);
     }
 
     const selectedSet = extendedFallbackChallenges[chosenSetIndex];
