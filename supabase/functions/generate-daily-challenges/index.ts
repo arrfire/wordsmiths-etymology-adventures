@@ -269,15 +269,19 @@ serve(async (req) => {
     const difficulties = ['Easy', 'Medium', 'Hard'];
     const challenges = [];
 
-    // Get all recent challenges to avoid duplicates (last 30 days)
-    const recentDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    // Get all recent challenges to avoid duplicates (last 60 days for safety)
+    const recentDate = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
     const { data: allRecentChallenges } = await supabase
       .from('challenges')
       .select('title, question, date_assigned')
       .gte('date_assigned', recentDate);
 
-    const recentTitlesSet = new Set(allRecentChallenges?.map(c => c.title?.trim()) || []);
-    const recentQuestionsSet = new Set(allRecentChallenges?.map(c => c.question?.trim()) || []);
+    console.log(`Found ${allRecentChallenges?.length || 0} recent challenges since ${recentDate}`);
+    
+    const recentTitlesSet = new Set(allRecentChallenges?.map(c => c.title?.trim().toLowerCase()) || []);
+    const recentQuestionsSet = new Set(allRecentChallenges?.map(c => c.question?.trim().toLowerCase()) || []);
+
+    console.log(`Recent titles: ${Array.from(recentTitlesSet).slice(0, 5).join(', ')}...`);
 
     // Find a fallback set with no recent conflicts using proper rotation
     let chosenSetIndex = -1;
@@ -288,26 +292,36 @@ serve(async (req) => {
       const testIndex = (todayNumber + attempt) % extendedFallbackChallenges.length;
       const testSet = extendedFallbackChallenges[testIndex];
       
-      const hasConflict = testSet.some(challenge => 
-        recentTitlesSet.has(challenge.title?.trim()) || 
-        recentQuestionsSet.has(challenge.question?.trim())
-      );
+      console.log(`Testing set ${testIndex}: [${testSet.map(c => c.title).join(', ')}]`);
+      
+      const hasConflict = testSet.some(challenge => {
+        const titleMatch = recentTitlesSet.has(challenge.title?.trim().toLowerCase());
+        const questionMatch = recentQuestionsSet.has(challenge.question?.trim().toLowerCase());
+        
+        if (titleMatch || questionMatch) {
+          console.log(`Conflict found in set ${testIndex}: title="${challenge.title}" (title match: ${titleMatch}, question match: ${questionMatch})`);
+          return true;
+        }
+        return false;
+      });
       
       if (!hasConflict) {
         chosenSetIndex = testIndex;
-        console.log(`Selected fallback set ${testIndex} with no conflicts (rotation attempt ${attempt})`);
+        console.log(`✅ Selected fallback set ${testIndex} with NO conflicts (rotation attempt ${attempt})`);
         break;
+      } else {
+        console.log(`❌ Set ${testIndex} has conflicts, trying next...`);
       }
     }
 
     // If all sets have conflicts, find the one used longest ago
     if (chosenSetIndex === -1) {
-      console.log(`All sets have conflicts, finding least recently used`);
+      console.log(`⚠️ All sets have conflicts, finding least recently used`);
       const setLastUsed = new Map();
       
       for (let i = 0; i < extendedFallbackChallenges.length; i++) {
-        const setTitles = new Set(extendedFallbackChallenges[i].map(c => c.title?.trim()));
-        const recentUsage = allRecentChallenges?.filter(c => setTitles.has(c.title?.trim())) || [];
+        const setTitles = new Set(extendedFallbackChallenges[i].map(c => c.title?.trim().toLowerCase()));
+        const recentUsage = allRecentChallenges?.filter(c => setTitles.has(c.title?.trim().toLowerCase())) || [];
         
         if (recentUsage.length === 0) {
           setLastUsed.set(i, new Date('1970-01-01').getTime()); // Never used
@@ -321,7 +335,7 @@ serve(async (req) => {
       chosenSetIndex = Array.from(setLastUsed.entries())
         .sort(([,a], [,b]) => a - b)[0][0];
       
-      console.log(`Selected set ${chosenSetIndex} as least recently used`);
+      console.log(`Selected set ${chosenSetIndex} as least recently used (last used: ${new Date(setLastUsed.get(chosenSetIndex)).toISOString().split('T')[0]})`);
     }
 
     const selectedSet = extendedFallbackChallenges[chosenSetIndex];
