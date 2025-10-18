@@ -29,7 +29,7 @@ const FeaturesHighlight = () => {
       icon: <BookOpen className="h-8 w-8 text-blue-600" />,
       title: "Expert Video Lessons",
       description: "Learn etymology through our acclaimed 2-minute video format",
-      highlight: "40 Videos",
+      highlight: "50 Videos",
       link: "https://www.youtube.com/@thewordsmithscorner",
       buttonText: "Watch Now",
       buttonClass: "bg-blue-600 hover:bg-blue-700",
