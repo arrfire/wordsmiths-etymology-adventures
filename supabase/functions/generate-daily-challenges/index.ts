@@ -263,6 +263,186 @@ serve(async (req) => {
           explanation: "Bluetooth is named after King Harald 'Bluetooth' Gormsson, who united Danish tribes like the technology unites devices.",
           hint: "Think about a historical ruler known for unifying people."
         }
+      ],
+      // Set 7: Food and Cuisine
+      [
+        {
+          title: "Coffee Culture",
+          description: "The journey of coffee from bean to global beverage",
+          question: "The word 'mocha' originally referred to what?",
+          options: ["A coffee flavor", "A Yemeni port city", "A brewing method", "A type of bean"],
+          correct_answer: 1,
+          explanation: "Mocha comes from Al-Mukha, a port city in Yemen that was a major coffee trading center in the 15th-17th centuries.",
+          hint: "Think about a place where coffee was traded, not how it's prepared."
+        },
+        {
+          title: "Pasta Linguistics",
+          description: "Italian culinary terms and their meanings",
+          question: "What does 'spaghetti' literally mean in Italian?",
+          options: ["Long strings", "Little worms", "Thin ropes", "Small strings"],
+          correct_answer: 3,
+          explanation: "Spaghetti is the plural of 'spaghetto', which means 'thin string' or 'twine' in Italian, from 'spago' (string).",
+          hint: "Think about the shape and how Italians might describe something thin."
+        },
+        {
+          title: "Sandwich Story",
+          description: "Food named after people and places",
+          question: "The 'sandwich' is named after whom?",
+          options: ["A chef", "An earl", "A town", "An inventor"],
+          correct_answer: 1,
+          explanation: "Named after John Montagu, 4th Earl of Sandwich, who supposedly ordered meat between bread so he could eat while gambling.",
+          hint: "Think about British nobility with a title."
+        }
+      ],
+      // Set 8: Fashion and Clothing
+      [
+        {
+          title: "Denim Origins",
+          description: "The surprising history of everyday fabrics",
+          question: "The word 'denim' comes from which French city?",
+          options: ["Paris", "Lyon", "Nîmes", "Marseille"],
+          correct_answer: 2,
+          explanation: "Denim comes from 'serge de Nîmes' (fabric from Nîmes). The French city was famous for this sturdy fabric.",
+          hint: "The word itself contains a modified version of the city name."
+        },
+        {
+          title: "Silk Road Stories",
+          description: "Luxury fabrics and their exotic origins",
+          question: "What does 'pajamas' literally mean in its original language?",
+          options: ["Night clothes", "Leg garment", "Soft fabric", "Sleeping outfit"],
+          correct_answer: 1,
+          explanation: "Pajamas comes from Persian and Urdu 'pāy-jāma', meaning 'leg garment' (pāy=leg, jāma=garment).",
+          hint: "Think about what body part this loose clothing covers."
+        },
+        {
+          title: "Hat History",
+          description: "Headwear terms from around the world",
+          question: "The word 'beret' comes from which regional language?",
+          options: ["French", "Spanish", "Basque", "Italian"],
+          correct_answer: 2,
+          explanation: "Beret comes from Gascon Béarnais 'berret', a language of the Basque region, referring to the flat cap style.",
+          hint: "Think about the mountainous region between France and Spain."
+        }
+      ],
+      // Set 9: Sports and Games
+      [
+        {
+          title: "Tennis Terms",
+          description: "The peculiar language of racquet sports",
+          question: "Why do we say 'love' for zero in tennis?",
+          options: ["Playing for love", "French l'oeuf (egg)", "Lover's game", "Love of sport"],
+          correct_answer: 1,
+          explanation: "Love likely comes from French 'l'oeuf' (the egg) because a zero looks like an egg. The phrase was corrupted to 'love'.",
+          hint: "Think about what shape zero resembles and a French word for it."
+        },
+        {
+          title: "Marathon Legacy",
+          description: "Athletic events with ancient origins",
+          question: "The word 'gymnasium' comes from Greek meaning what?",
+          options: ["Place to train", "Exercise building", "Naked", "Athletic field"],
+          correct_answer: 2,
+          explanation: "Gymnasium comes from Greek 'gymnazein' meaning 'to exercise naked' - ancient Greeks trained nude.",
+          hint: "Think about ancient Greek athletic practices that might seem unusual today."
+        },
+        {
+          title: "Chess Chronicles",
+          description: "Strategy games across cultures",
+          question: "The word 'checkmate' comes from which phrase?",
+          options: ["Check the mate", "Persian 'shah mat'", "Chess master", "Final check"],
+          correct_answer: 1,
+          explanation: "Checkmate comes from Persian 'shah mat' meaning 'the king is dead' or 'the king is helpless'.",
+          hint: "The word has royal connotations from ancient Persia."
+        }
+      ],
+      // Set 10: Music and Arts
+      [
+        {
+          title: "Orchestra Origins",
+          description: "Musical terms from ancient theaters",
+          question: "The word 'orchestra' originally referred to what part of a theater?",
+          options: ["Stage area", "Dancing space", "Seating section", "Back room"],
+          correct_answer: 1,
+          explanation: "Orchestra comes from Greek 'orcheisthai' (to dance). It was the circular space where Greek chorus danced.",
+          hint: "Think about movement and performance, not just music."
+        },
+        {
+          title: "Canvas Creations",
+          description: "Art terms and their material origins",
+          question: "The word 'canvas' comes from which plant?",
+          options: ["Cotton", "Linen", "Hemp", "Jute"],
+          correct_answer: 2,
+          explanation: "Canvas comes from Latin 'cannabis' (hemp). The fabric was originally made from hemp before cotton became common.",
+          hint: "Think about a controversial plant that has many industrial uses."
+        },
+        {
+          title: "Symphony Secrets",
+          description: "Classical music terminology",
+          question: "What does 'piano' literally mean in Italian?",
+          options: ["Soft", "Keyboard", "Musical", "Harmony"],
+          correct_answer: 0,
+          explanation: "Piano is short for 'pianoforte', meaning 'soft-loud' in Italian, describing the instrument's dynamic range.",
+          hint: "Think about volume and how the instrument can vary its sound."
+        }
+      ],
+      // Set 11: Weather and Nature
+      [
+        {
+          title: "Hurricane Names",
+          description: "Storm terminology from indigenous languages",
+          question: "The word 'hurricane' comes from which god?",
+          options: ["Greek Zeus", "Taíno Juracán", "Norse Thor", "Roman Jupiter"],
+          correct_answer: 1,
+          explanation: "Hurricane comes from Taíno 'hurakán', the name of the Caribbean storm god in indigenous mythology.",
+          hint: "Think about the original inhabitants of Caribbean islands."
+        },
+        {
+          title: "Cloud Classifications",
+          description: "Meteorological terms from Latin roots",
+          question: "What does 'cirrus' cloud mean in Latin?",
+          options: ["White", "High", "Curl of hair", "Wispy"],
+          correct_answer: 2,
+          explanation: "Cirrus comes from Latin meaning 'curl of hair' or 'fringe', describing the wispy, hair-like appearance of high clouds.",
+          hint: "Think about something on your body that can be curly and wispy."
+        },
+        {
+          title: "Avalanche Alert",
+          description: "Natural disaster terminology",
+          question: "The word 'tsunami' means what in Japanese?",
+          options: ["Big wave", "Harbor wave", "Ocean earthquake", "Tidal wave"],
+          correct_answer: 1,
+          explanation: "Tsunami means 'harbor wave' in Japanese (tsu=harbor, nami=wave), describing waves that devastate harbors.",
+          hint: "Think about where these waves cause the most visible destruction."
+        }
+      ],
+      // Set 12: Architecture and Building
+      [
+        {
+          title: "Palace Etymology",
+          description: "Grand building terms from ancient Rome",
+          question: "The word 'palace' comes from which Roman hill?",
+          options: ["Capitoline", "Aventine", "Palatine", "Quirinal"],
+          correct_answer: 2,
+          explanation: "Palace comes from Palatine Hill in Rome, where emperors built their grand residences. 'Palatium' became 'palace'.",
+          hint: "The word itself sounds similar to one of Rome's seven hills."
+        },
+        {
+          title: "Window Wisdom",
+          description: "Everyday architectural terms with surprising origins",
+          question: "The Old Norse origin of 'window' literally meant what?",
+          options: ["Glass opening", "Wind eye", "Light hole", "Wall gap"],
+          correct_answer: 1,
+          explanation: "Window comes from Old Norse 'vindauga': 'vindr' (wind) + 'auga' (eye), literally 'wind eye'.",
+          hint: "Think about two natural elements - one moving, one seeing."
+        },
+        {
+          title: "Castle Construction",
+          description: "Medieval fortress terminology",
+          question: "What does 'dungeon' originally mean?",
+          options: ["Prison cell", "Underground room", "Tower keep", "Castle basement"],
+          correct_answer: 2,
+          explanation: "Dungeon originally meant the great tower or keep of a castle (from Latin 'dominus'=lord), not a prison.",
+          hint: "Think up, not down - it was the lord's residence."
+        }
       ]
     ];
 
