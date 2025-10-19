@@ -443,6 +443,546 @@ serve(async (req) => {
           explanation: "Dungeon originally meant the great tower or keep of a castle (from Latin 'dominus'=lord), not a prison.",
           hint: "Think up, not down - it was the lord's residence."
         }
+      ],
+      // Set 13: Literature and Books
+      [
+        {
+          title: "Novel Nomenclature",
+          description: "Literary terms and their origins",
+          question: "What does 'book' originally refer to in Old English?",
+          options: ["Written pages", "Beech tree", "Leather binding", "Story collection"],
+          correct_answer: 1,
+          explanation: "Book comes from Old English 'boc' meaning beech tree. Early Germanic people carved runes on beech wood tablets.",
+          hint: "Think about what material was used for writing before paper."
+        },
+        {
+          title: "Poetry Roots",
+          description: "Verse terminology across languages",
+          question: "The word 'lyric' is connected to which musical instrument?",
+          options: ["Flute", "Lyre", "Harp", "Drum"],
+          correct_answer: 1,
+          explanation: "Lyric comes from Greek 'lyrikos', relating to the lyre. Ancient Greeks sang lyric poetry while playing the lyre.",
+          hint: "Think about an ancient stringed instrument from Greece."
+        },
+        {
+          title: "Author Etymology",
+          description: "Words for writers and creators",
+          question: "What does 'plagiarism' literally mean in Latin?",
+          options: ["Theft", "Copying", "Kidnapping", "Lying"],
+          correct_answer: 2,
+          explanation: "Plagiarism comes from Latin 'plagiarius' meaning kidnapper - stealing someone else's intellectual 'child'.",
+          hint: "Think about taking something that belongs to someone else."
+        }
+      ],
+      // Set 14: Space Exploration
+      [
+        {
+          title: "Astronaut Origins",
+          description: "Space travel terminology",
+          question: "What does 'astronaut' literally mean in Greek?",
+          options: ["Space traveler", "Star sailor", "Sky explorer", "Cosmic voyager"],
+          correct_answer: 1,
+          explanation: "Astronaut comes from Greek 'astron' (star) + 'nautes' (sailor), literally meaning 'star sailor'.",
+          hint: "Think about someone who sails or navigates."
+        },
+        {
+          title: "Rocket Science",
+          description: "Space technology terms",
+          question: "The word 'comet' comes from Greek meaning what?",
+          options: ["Flying rock", "Long-haired star", "Night wanderer", "Bright tail"],
+          correct_answer: 1,
+          explanation: "Comet comes from Greek 'kometes' meaning 'long-haired star', describing the tail that looks like flowing hair.",
+          hint: "Think about what part of a comet looks like it could be on your head."
+        },
+        {
+          title: "Lunar Language",
+          description: "Moon-related terminology",
+          question: "Why is Monday called Monday?",
+          options: ["Start of week", "Moon's day", "Morning day", "Market day"],
+          correct_answer: 1,
+          explanation: "Monday comes from Old English 'Monandæg' meaning 'Moon's day', following the ancient practice of naming days after celestial bodies.",
+          hint: "Think about celestial bodies and how they named weekdays."
+        }
+      ],
+      // Set 15: Transportation History
+      [
+        {
+          title: "Automobile Age",
+          description: "Car terminology and origins",
+          question: "What does 'dashboard' originally refer to?",
+          options: ["Speed gauge", "Mud splash guard", "Control panel", "Instrument board"],
+          correct_answer: 1,
+          explanation: "Dashboard originally was a board on horse carriages to block mud and water 'dashed' up by horses' hooves.",
+          hint: "Think about protecting passengers from something horses kicked up."
+        },
+        {
+          title: "Aviation Terms",
+          description: "Flight and aircraft language",
+          question: "The word 'helicopter' combines Greek words meaning what?",
+          options: ["Sky vehicle", "Spiral wing", "Rotating flight", "Vertical lift"],
+          correct_answer: 1,
+          explanation: "Helicopter comes from Greek 'helix' (spiral) + 'pteron' (wing), describing the rotating blades.",
+          hint: "Think about the shape and movement of the rotor blades."
+        },
+        {
+          title: "Bicycle Basics",
+          description: "Two-wheeled transportation",
+          question: "What does 'tandem' originally mean in Latin?",
+          options: ["Two together", "At length", "Side by side", "Double power"],
+          correct_answer: 1,
+          explanation: "Tandem means 'at length' or 'lengthwise' in Latin, describing the front-to-back seating arrangement.",
+          hint: "Think about the arrangement of seats, not side-by-side."
+        }
+      ],
+      // Set 16: Photography and Film
+      [
+        {
+          title: "Camera Origins",
+          description: "Photography equipment terms",
+          question: "What does 'camera' literally mean in Latin?",
+          options: ["Light box", "Dark room", "Image maker", "Picture device"],
+          correct_answer: 1,
+          explanation: "Camera comes from Latin 'camera obscura' meaning 'dark chamber', the principle early cameras were based on.",
+          hint: "Think about the chamber where images are formed."
+        },
+        {
+          title: "Cinema History",
+          description: "Movie terminology",
+          question: "What does 'cinema' derive from in Greek?",
+          options: ["Pictures", "Movement", "Drama", "Light"],
+          correct_answer: 1,
+          explanation: "Cinema comes from Greek 'kinema' meaning movement, related to 'kinesis' (motion) - movies are moving pictures.",
+          hint: "Think about what makes movies different from still photographs."
+        },
+        {
+          title: "Film Development",
+          description: "Movie production terms",
+          question: "Why are movies called 'films'?",
+          options: ["Film directors", "Film coating", "Film studios", "Film editing"],
+          correct_answer: 1,
+          explanation: "Movies are recorded on a thin flexible strip or 'film' coated with light-sensitive emulsion.",
+          hint: "Think about the physical material movies were originally recorded on."
+        }
+      ],
+      // Set 17: Language and Writing
+      [
+        {
+          title: "Alphabet Origins",
+          description: "Writing system terminology",
+          question: "What do the first two letters of the Greek alphabet spell?",
+          options: ["Alpha Beta", "Alpha Gamma", "Beta Gamma", "Alpha Delta"],
+          correct_answer: 0,
+          explanation: "Alphabet comes from the first two Greek letters: alpha and beta, giving us the word for the entire letter system.",
+          hint: "The word itself contains these two letter names."
+        },
+        {
+          title: "Grammar Guide",
+          description: "Language structure terms",
+          question: "What does 'punctuation' literally mean?",
+          options: ["Marking points", "Stopping places", "Dot making", "Sentence breaks"],
+          correct_answer: 0,
+          explanation: "Punctuation comes from Latin 'punctus' (point). Romans marked texts with points to aid reading.",
+          hint: "Think about making points or dots on a page."
+        },
+        {
+          title: "Dictionary Development",
+          description: "Reference book terminology",
+          question: "What does 'vocabulary' come from in Latin?",
+          options: ["Speaking", "Words", "Voice", "Language"],
+          correct_answer: 0,
+          explanation: "Vocabulary comes from Latin 'vocabulum' from 'vocare' meaning 'to call' or 'to speak'.",
+          hint: "Think about using your voice to communicate."
+        }
+      ],
+      // Set 18: Economics and Currency
+      [
+        {
+          title: "Money Matters",
+          description: "Currency terminology",
+          question: "Why is British currency called 'pound sterling'?",
+          options: ["Weight in gold", "Silver pennies", "Royal decree", "Trading standard"],
+          correct_answer: 1,
+          explanation: "Sterling comes from 'Easterling silver', referring to the high-quality silver used. A pound was literally a pound of sterling silver.",
+          hint: "Think about the metal quality and weight."
+        },
+        {
+          title: "Banking Terms",
+          description: "Financial institution language",
+          question: "What does 'mortgage' literally mean in French?",
+          options: ["Long loan", "Death pledge", "House debt", "Property bond"],
+          correct_answer: 1,
+          explanation: "Mortgage comes from Old French 'mort' (death) + 'gage' (pledge) - the deal 'dies' when paid off or defaults.",
+          hint: "Think about something ending or dying."
+        },
+        {
+          title: "Market Origins",
+          description: "Commerce and trade terms",
+          question: "The word 'capital' (as in money) relates to what?",
+          options: ["City center", "Head/chief", "Main asset", "King's wealth"],
+          correct_answer: 1,
+          explanation: "Capital comes from Latin 'caput' (head). Like the head leads the body, capital is the principal or 'head' sum.",
+          hint: "Think about what leads or is most important in the body."
+        }
+      ],
+      // Set 19: Mathematics
+      [
+        {
+          title: "Number Names",
+          description: "Mathematical terminology",
+          question: "What does 'calculate' originally relate to?",
+          options: ["Counting", "Small stones", "Mathematics", "Roman numerals"],
+          correct_answer: 1,
+          explanation: "Calculate comes from Latin 'calculus' meaning pebble or small stone. Romans used pebbles on counting boards.",
+          hint: "Think about small objects used for counting in ancient times."
+        },
+        {
+          title: "Geometry Origins",
+          description: "Shape and space mathematics",
+          question: "What does 'geometry' literally mean in Greek?",
+          options: ["Shape study", "Earth measurement", "Space calculation", "Angle science"],
+          correct_answer: 1,
+          explanation: "Geometry comes from Greek 'geo' (earth) + 'metron' (measure). It originated from surveying land in ancient Egypt.",
+          hint: "Think about measuring land and property."
+        },
+        {
+          title: "Zero History",
+          description: "Number system development",
+          question: "The word 'zero' traces back to which language?",
+          options: ["Latin", "Greek", "Arabic", "Sanskrit"],
+          correct_answer: 2,
+          explanation: "Zero comes from Arabic 'sifr' (empty/cipher), which came from Sanskrit 'shunya' (void). Arabs brought it to Europe.",
+          hint: "Think about the Middle Eastern language that spread mathematics to Europe."
+        }
+      ],
+      // Set 20: Chemistry
+      [
+        {
+          title: "Elemental Names",
+          description: "Chemical terminology",
+          question: "What does 'oxygen' literally mean in Greek?",
+          options: ["Air maker", "Acid former", "Life gas", "Breath giver"],
+          correct_answer: 1,
+          explanation: "Oxygen comes from Greek 'oxys' (acid/sharp) + 'genes' (forming). Scientists thought all acids contained oxygen.",
+          hint: "Think about another substance related to sourness."
+        },
+        {
+          title: "Laboratory Language",
+          description: "Science workspace terms",
+          question: "The word 'alchemy' comes from which civilization?",
+          options: ["Greek", "Egyptian", "Babylonian", "Chinese"],
+          correct_answer: 1,
+          explanation: "Alchemy comes from Arabic 'al-kimiya', from Egyptian 'khem' (black earth), referring to the black soil of the Nile.",
+          hint: "Think about the civilization known for ancient mysteries and black river soil."
+        },
+        {
+          title: "Atomic Age",
+          description: "Particle physics terms",
+          question: "What does 'atom' mean in Greek?",
+          options: ["Tiny particle", "Indivisible", "Basic unit", "Matter piece"],
+          correct_answer: 1,
+          explanation: "Atom comes from Greek 'atomos' meaning 'uncuttable' or 'indivisible' - what Greeks thought was the smallest unit.",
+          hint: "Think about something that cannot be cut or divided."
+        }
+      ],
+      // Set 21: Biology and Nature
+      [
+        {
+          title: "Animal Kingdom",
+          description: "Zoological terminology",
+          question: "What does 'hippopotamus' mean in Greek?",
+          options: ["Water beast", "River horse", "Mud dweller", "Large animal"],
+          correct_answer: 1,
+          explanation: "Hippopotamus comes from Greek 'hippos' (horse) + 'potamos' (river), literally 'river horse'.",
+          hint: "Think about combining a common farm animal with water."
+        },
+        {
+          title: "Plant Science",
+          description: "Botanical terms",
+          question: "The word 'dandelion' comes from French meaning what?",
+          options: ["Yellow flower", "Lion's tooth", "Spring bloom", "Weed seed"],
+          correct_answer: 1,
+          explanation: "Dandelion comes from French 'dent-de-lion' (lion's tooth), describing the jagged, tooth-like leaves.",
+          hint: "Look at the shape of the leaves and think of a fierce animal."
+        },
+        {
+          title: "Cellular Discovery",
+          description: "Microscopic biology",
+          question: "Why did Robert Hooke name tiny structures 'cells'?",
+          options: ["Living chambers", "Monk's rooms", "Small boxes", "Prison cells"],
+          correct_answer: 1,
+          explanation: "Hooke called them cells because they reminded him of monastery cells (small rooms) where monks lived.",
+          hint: "Think about small rooms in religious buildings."
+        }
+      ],
+      // Set 22: Geography
+      [
+        {
+          title: "Continent Names",
+          description: "Landmass terminology",
+          question: "What does 'America' come from?",
+          options: ["Native word", "Explorer Amerigo", "Latin phrase", "Spanish term"],
+          correct_answer: 1,
+          explanation: "America is named after Italian explorer Amerigo Vespucci, whose name was latinized on early maps.",
+          hint: "Think about an Italian explorer whose first name sounds similar."
+        },
+        {
+          title: "Ocean Origins",
+          description: "Water body naming",
+          question: "The Pacific Ocean was named for being what?",
+          options: ["Largest", "Deepest", "Peaceful", "Western"],
+          correct_answer: 2,
+          explanation: "Pacific comes from Latin 'pacificus' (peaceful). Magellan named it this after encountering calm waters.",
+          hint: "Think about the water conditions when it was named."
+        },
+        {
+          title: "Mountain Terms",
+          description: "Geological feature names",
+          question: "What does 'volcano' come from?",
+          options: ["Fire mountain", "Roman god", "Smoking peak", "Lava flow"],
+          correct_answer: 1,
+          explanation: "Volcano comes from Vulcan, the Roman god of fire. Romans believed he had his forge beneath Mount Etna.",
+          hint: "Think about Roman mythology and fire."
+        }
+      ],
+      // Set 23: Communication Technology
+      [
+        {
+          title: "Telegraph Tales",
+          description: "Early electric communication",
+          question: "What does 'telegraph' mean in Greek?",
+          options: ["Electric message", "Distance writing", "Wire communication", "Signal sending"],
+          correct_answer: 1,
+          explanation: "Telegraph comes from Greek 'tele' (far) + 'graphein' (to write), meaning 'writing at a distance'.",
+          hint: "Think about writing messages that travel far."
+        },
+        {
+          title: "Telephone History",
+          description: "Voice transmission devices",
+          question: "The word 'microphone' combines Greek words meaning what?",
+          options: ["Small voice", "Tiny sound", "Quiet speaker", "Low volume"],
+          correct_answer: 0,
+          explanation: "Microphone comes from Greek 'mikros' (small) + 'phone' (voice/sound), though it actually makes sound louder.",
+          hint: "Think about the size reference in the Greek prefix."
+        },
+        {
+          title: "Radio Revolution",
+          description: "Wireless communication",
+          question: "What does 'broadcast' originally refer to?",
+          options: ["Wide signal", "Scattering seed", "Mass message", "Radio waves"],
+          correct_answer: 1,
+          explanation: "Broadcast comes from agriculture - casting seed broadly by hand. Radio adopted it for 'widely scattered' signals.",
+          hint: "Think about farming practices before radio existed."
+        }
+      ],
+      // Set 24: Agriculture and Farming
+      [
+        {
+          title: "Farm Etymology",
+          description: "Agricultural terminology",
+          question: "What does 'harvest' originally mean in Old English?",
+          options: ["Crop gathering", "Autumn season", "Food storage", "Field work"],
+          correct_answer: 1,
+          explanation: "Harvest comes from Old English 'hærfest' meaning autumn - the season itself, not just the activity.",
+          hint: "Think about when crops are gathered, not the action itself."
+        },
+        {
+          title: "Livestock Language",
+          description: "Animal husbandry terms",
+          question: "Why is cattle related to 'capital'?",
+          options: ["Farm wealth", "Counting units", "Trade value", "Head count"],
+          correct_answer: 3,
+          explanation: "Both come from Latin 'caput' (head). Wealth was counted in 'heads of cattle', and 'per capita' means per head.",
+          hint: "Think about how you count animals and what body part you count."
+        },
+        {
+          title: "Crop Culture",
+          description: "Plant cultivation terms",
+          question: "What does 'cereal' come from?",
+          options: ["Grain type", "Roman goddess", "Breakfast food", "Field crop"],
+          correct_answer: 1,
+          explanation: "Cereal comes from Ceres, the Roman goddess of agriculture and grain crops.",
+          hint: "Think about Roman mythology and agriculture."
+        }
+      ],
+      // Set 25: Energy Sources
+      [
+        {
+          title: "Electric Etymology",
+          description: "Electrical power terminology",
+          question: "What does 'electricity' come from in Greek?",
+          options: ["Lightning", "Amber", "Power", "Spark"],
+          correct_answer: 1,
+          explanation: "Electricity comes from Greek 'elektron' (amber). Ancient Greeks noticed amber attracted objects when rubbed.",
+          hint: "Think about an ancient material that creates static when rubbed."
+        },
+        {
+          title: "Coal Age",
+          description: "Fossil fuel terminology",
+          question: "What does 'petroleum' literally mean in Latin?",
+          options: ["Black liquid", "Rock oil", "Earth energy", "Fossil fuel"],
+          correct_answer: 1,
+          explanation: "Petroleum comes from Latin 'petra' (rock) + 'oleum' (oil), meaning 'rock oil' or oil from rocks.",
+          hint: "Think about where oil is found and what it's made of."
+        },
+        {
+          title: "Solar Power",
+          description: "Renewable energy terms",
+          question: "The word 'solar' honors which Roman deity?",
+          options: ["Apollo", "Sol", "Jupiter", "Mars"],
+          correct_answer: 1,
+          explanation: "Solar comes from 'Sol', the Roman sun god. Sol Invictus was the 'unconquered sun'.",
+          hint: "Think about the Roman god specifically associated with the sun."
+        }
+      ],
+      // Set 26: Materials and Inventions
+      [
+        {
+          title: "Plastic Origins",
+          description: "Synthetic material terminology",
+          question: "What does 'plastic' originally mean in Greek?",
+          options: ["Flexible", "Man-made", "Moldable", "Artificial"],
+          correct_answer: 2,
+          explanation: "Plastic comes from Greek 'plastikos' meaning capable of being shaped or molded, from 'plassein' (to mold).",
+          hint: "Think about what you can do with the material when it's warm."
+        },
+        {
+          title: "Rubber Revolution",
+          description: "Elastic material history",
+          question: "Why is rubber called rubber?",
+          options: ["Erasing pencil", "Rubbing texture", "Tree resin", "Bouncing property"],
+          correct_answer: 0,
+          explanation: "Rubber got its name because it could 'rub out' pencil marks - its original commercial use as an eraser.",
+          hint: "Think about what students use to remove pencil mistakes."
+        },
+        {
+          title: "Glass Through Time",
+          description: "Transparent material origins",
+          question: "The word 'crystal' comes from Greek meaning what?",
+          options: ["Clear stone", "Ice", "Transparent", "Hard mineral"],
+          correct_answer: 1,
+          explanation: "Crystal comes from Greek 'krystallos' meaning ice. Greeks thought quartz crystals were permanently frozen ice.",
+          hint: "Think about something cold and clear that forms in nature."
+        }
+      ],
+      // Set 27: Psychology and Mind
+      [
+        {
+          title: "Mind Matters",
+          description: "Psychological terminology",
+          question: "What do the Greek roots of 'psychology' literally mean?",
+          options: ["Mind study", "Soul discourse", "Behavior science", "Mental health"],
+          correct_answer: 1,
+          explanation: "Psychology comes from Greek 'psyche' (soul/breath of life) + 'logos' (study), meaning 'study of the soul'.",
+          hint: "Think about the ancient concept of the soul, not just the mind."
+        },
+        {
+          title: "Memory Terms",
+          description: "Cognitive function language",
+          question: "The word 'amnesia' means what in Greek?",
+          options: ["Memory loss", "Forgetfulness", "Without memory", "Brain damage"],
+          correct_answer: 2,
+          explanation: "Amnesia comes from Greek 'a' (without) + 'mnesis' (memory), literally meaning 'without memory'.",
+          hint: "Think about the prefix that means 'without' or 'lacking'."
+        },
+        {
+          title: "Emotion Etymology",
+          description: "Feeling and mood terminology",
+          question: "What does 'phobia' literally mean?",
+          options: ["Hatred", "Fear", "Anxiety", "Avoidance"],
+          correct_answer: 1,
+          explanation: "Phobia comes from Greek 'phobos' meaning fear or dread, named after Phobos, god of fear.",
+          hint: "Think about the basic emotion that all phobias involve."
+        }
+      ],
+      // Set 28: Law and Justice
+      [
+        {
+          title: "Legal Language",
+          description: "Court and law terminology",
+          question: "What does 'verdict' mean in Latin?",
+          options: ["Final judgment", "True speech", "Legal decision", "Court ruling"],
+          correct_answer: 1,
+          explanation: "Verdict comes from Latin 'vere' (truly) + 'dictum' (said/spoken), literally meaning 'true speech'.",
+          hint: "Think about speaking the truth in court."
+        },
+        {
+          title: "Justice Terms",
+          description: "Legal system vocabulary",
+          question: "The word 'testimony' relates to which body part?",
+          options: ["Hand", "Heart", "Testicles", "Tongue"],
+          correct_answer: 2,
+          explanation: "Testimony comes from Latin 'testis' (witness), related to 'testiculus'. Romans swore oaths by touching their testicles.",
+          hint: "Think about ancient Roman oath-taking practices (anatomical)."
+        },
+        {
+          title: "Crime and Punishment",
+          description: "Criminal justice terms",
+          question: "What does 'jury' originally mean in French?",
+          options: ["Judgment group", "Sworn oath", "Twelve people", "Court panel"],
+          correct_answer: 1,
+          explanation: "Jury comes from Old French 'juree' meaning sworn oath, from Latin 'jurare' (to swear).",
+          hint: "Think about what jurors do before serving."
+        }
+      ],
+      // Set 29: Time and Calendars
+      [
+        {
+          title: "Month Names",
+          description: "Calendar terminology",
+          question: "Which month is named after the Roman god of war?",
+          options: ["January", "March", "May", "June"],
+          correct_answer: 1,
+          explanation: "March is named after Mars, the Roman god of war. It was the first month of the early Roman calendar.",
+          hint: "Think about a month when military campaigns traditionally began."
+        },
+        {
+          title: "Time Keeping",
+          description: "Measurement of time",
+          question: "What does 'minute' originally mean in Latin?",
+          options: ["Tiny", "Sixtieth", "Small portion", "Short time"],
+          correct_answer: 2,
+          explanation: "Minute comes from Latin 'minuta' meaning small or minute part. A minute is a small part of an hour.",
+          hint: "Think about size, not the time unit itself."
+        },
+        {
+          title: "Season Names",
+          description: "Yearly cycle terminology",
+          question: "What does 'autumn' (or fall) originally mean?",
+          options: ["Harvest time", "Leaf falling", "Cool season", "Year end"],
+          correct_answer: 0,
+          explanation: "Autumn comes from Latin 'autumnus', possibly from 'augere' (to increase), referring to harvest abundance.",
+          hint: "Think about what farmers do in this season."
+        }
+      ],
+      // Set 30: Colors and Dyes
+      [
+        {
+          title: "Color Origins",
+          description: "Pigment and dye terminology",
+          question: "The color 'purple' was named after what?",
+          options: ["Royal robes", "Sea snail", "Flower petals", "Precious stone"],
+          correct_answer: 1,
+          explanation: "Purple comes from Latin 'purpura', a mollusk that produced the expensive Tyrian purple dye.",
+          hint: "Think about the expensive ancient source of this royal color."
+        },
+        {
+          title: "Indigo Journey",
+          description: "Blue dye history",
+          question: "Where does the word 'indigo' come from?",
+          options: ["Indian plant", "Deep blue", "Dye process", "Spanish word"],
+          correct_answer: 0,
+          explanation: "Indigo comes from Spanish 'indico' and Latin 'indicum', meaning 'from India', where the dye originated.",
+          hint: "Think about the geographical origin of this blue dye."
+        },
+        {
+          title: "Paint and Pigment",
+          description: "Artistic color terms",
+          question: "What does 'vermilion' (red pigment) originally refer to?",
+          options: ["Red clay", "Little worm", "Fire color", "Ruby stone"],
+          correct_answer: 1,
+          explanation: "Vermilion comes from Latin 'vermiculus' (little worm), referring to the kermes insect used to make red dye.",
+          hint: "Think about a small creature used to make red dye."
+        }
       ]
     ];
 
