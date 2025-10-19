@@ -983,6 +983,606 @@ serve(async (req) => {
           explanation: "Vermilion comes from Latin 'vermiculus' (little worm), referring to the kermes insect used to make red dye.",
           hint: "Think about a small creature used to make red dye."
         }
+      ],
+      // Set 31: Marine Biology
+      [
+        {
+          title: "Ocean Etymology",
+          description: "Sea creature terminology",
+          question: "What does 'dolphin' mean in Greek?",
+          options: ["Sea friend", "Womb fish", "Smart swimmer", "Wave rider"],
+          correct_answer: 1,
+          explanation: "Dolphin comes from Greek 'delphys' meaning womb, possibly referring to the dolphin's womb-like shape or live birth.",
+          hint: "Think about how dolphins give birth unlike most sea creatures."
+        },
+        {
+          title: "Coral Reefs",
+          description: "Marine ecosystem terms",
+          question: "The word 'coral' comes from which language?",
+          options: ["Latin", "Greek", "Arabic", "Sanskrit"],
+          correct_answer: 1,
+          explanation: "Coral comes from Greek 'korallion', possibly from Hebrew 'goral' (small pebble).",
+          hint: "Think about ancient Mediterranean civilizations."
+        },
+        {
+          title: "Deep Sea",
+          description: "Ocean depth terminology",
+          question: "What does 'abyss' mean in Greek?",
+          options: ["Deep water", "Bottomless", "Dark place", "Far away"],
+          correct_answer: 1,
+          explanation: "Abyss comes from Greek 'abyssos' meaning bottomless, from 'a' (without) + 'byssos' (bottom).",
+          hint: "Think about a place with no bottom."
+        }
+      ],
+      // Set 32: Gems and Minerals
+      [
+        {
+          title: "Diamond Origins",
+          description: "Precious stone terminology",
+          question: "What does 'diamond' mean in Greek?",
+          options: ["Precious stone", "Unbreakable", "Clear crystal", "Hardest material"],
+          correct_answer: 1,
+          explanation: "Diamond comes from Greek 'adamas' meaning unbreakable or invincible, from 'a' (not) + 'daman' (to tame).",
+          hint: "Think about diamond's most famous property."
+        },
+        {
+          title: "Ruby Red",
+          description: "Colored gemstone names",
+          question: "The word 'ruby' comes from Latin meaning what?",
+          options: ["Red stone", "Fire gem", "Blood color", "Red"],
+          correct_answer: 3,
+          explanation: "Ruby comes from Latin 'rubeus' meaning red, from 'ruber' (red).",
+          hint: "Simply think about the ruby's most obvious characteristic."
+        },
+        {
+          title: "Pearl Formation",
+          description: "Organic gemstone terms",
+          question: "What does 'pearl' originally refer to?",
+          options: ["Sea jewel", "Oyster ball", "Leg of mutton", "Round stone"],
+          correct_answer: 2,
+          explanation: "Pearl comes from Latin 'perna' meaning leg (as in leg of mutton), referring to the shape of the pearl mussel.",
+          hint: "Think about a meat cut that resembles the shape of a mussel."
+        }
+      ],
+      // Set 33: Beverages and Drinks
+      [
+        {
+          title: "Tea Time",
+          description: "Hot beverage history",
+          question: "The word 'tea' in English comes from which Chinese dialect?",
+          options: ["Mandarin 'cha'", "Cantonese 'cha'", "Min Nan 'te'", "Wu 'tsaa'"],
+          correct_answer: 2,
+          explanation: "Tea comes from Min Nan dialect 'te'. Languages using 'cha' got it via land routes, 'tea' via sea trade.",
+          hint: "Think about coastal Chinese traders and maritime routes."
+        },
+        {
+          title: "Wine Words",
+          description: "Alcoholic beverage terms",
+          question: "What does 'champagne' originally refer to?",
+          options: ["Sparkling wine", "Noble drink", "Open country", "French region"],
+          correct_answer: 2,
+          explanation: "Champagne comes from Latin 'campania' meaning open country or plain, the Champagne region of France.",
+          hint: "Think about landscape, not the drink itself."
+        },
+        {
+          title: "Cocktail Creation",
+          description: "Mixed drink terminology",
+          question: "One theory says 'cocktail' comes from what practice?",
+          options: ["Rooster tail garnish", "Mixed drinks in inns", "Horse tail docking", "French recipe"],
+          correct_answer: 2,
+          explanation: "One theory: 'cocktail' referred to mixed-breed horses with docked tails (cocked tails), later meaning 'mixed' drinks.",
+          hint: "Think about horses and their tails."
+        }
+      ],
+      // Set 34: Tools and Equipment
+      [
+        {
+          title: "Hammer History",
+          description: "Hand tool etymology",
+          question: "What does 'hammer' originally mean in Old English?",
+          options: ["Stone tool", "Striking tool", "Rock breaker", "Same as now"],
+          correct_answer: 3,
+          explanation: "Hammer comes from Old English 'hamor', from Proto-Germanic 'hamaraz', meaning exactly what it means now.",
+          hint: "Sometimes words don't change much at all."
+        },
+        {
+          title: "Screwdriver Story",
+          description: "Modern tool terms",
+          question: "The tool 'screwdriver' got its name from what action?",
+          options: ["Turning screws", "Driving screws in", "Both meanings", "Screw threading"],
+          correct_answer: 1,
+          explanation: "Screwdriver means a tool that drives (pushes in) screws, combining 'screw' + 'driver' (one who drives).",
+          hint: "Think about what you're doing to the screw - not just turning."
+        },
+        {
+          title: "Wrench Etymology",
+          description: "Mechanical tool language",
+          question: "What does 'wrench' originally mean?",
+          options: ["Grip", "Turn", "Twist", "Pull"],
+          correct_answer: 2,
+          explanation: "Wrench comes from Old English 'wrencan' meaning to twist, related to 'wrinkle' (something twisted).",
+          hint: "Think about the twisting motion you make with a wrench."
+        }
+      ],
+      // Set 35: Emotions and Feelings
+      [
+        {
+          title: "Anxiety Origins",
+          description: "Negative emotion terms",
+          question: "What does 'anxiety' mean in Latin?",
+          options: ["Worry", "Choke", "Fear", "Stress"],
+          correct_answer: 1,
+          explanation: "Anxiety comes from Latin 'anxietas' from 'angere' meaning to choke or cause distress - that tight feeling.",
+          hint: "Think about the physical sensation in your throat when anxious."
+        },
+        {
+          title: "Joy and Happiness",
+          description: "Positive emotion words",
+          question: "The word 'enthusiasm' originally meant what?",
+          options: ["Great joy", "Possessed by a god", "Excited energy", "Passionate feeling"],
+          correct_answer: 1,
+          explanation: "Enthusiasm comes from Greek 'entheos' meaning possessed by a god, from 'en' (in) + 'theos' (god).",
+          hint: "Think about divine inspiration and religious ecstasy."
+        },
+        {
+          title: "Sadness Terms",
+          description: "Melancholy vocabulary",
+          question: "What does 'melancholy' literally mean in Greek?",
+          options: ["Deep sadness", "Black bile", "Heavy heart", "Dark mood"],
+          correct_answer: 1,
+          explanation: "Melancholy comes from Greek 'melas' (black) + 'khole' (bile) - ancient medicine blamed sadness on black bile.",
+          hint: "Think about ancient medical theory and bodily fluids."
+        }
+      ],
+      // Set 36: Natural Disasters
+      [
+        {
+          title: "Earthquake Terms",
+          description: "Seismic event vocabulary",
+          question: "What does 'tsunami' mean in Japanese?",
+          options: ["Big wave", "Harbor wave", "Earthquake wave", "Tidal wave"],
+          correct_answer: 1,
+          explanation: "Tsunami comes from Japanese 'tsu' (harbor) + 'nami' (wave) - waves that are most destructive in harbors.",
+          hint: "Think about where these waves cause the most damage."
+        },
+        {
+          title: "Storm Language",
+          description: "Severe weather terms",
+          question: "The word 'hurricane' comes from which culture?",
+          options: ["Spanish", "Taino/Caribbean", "Portuguese", "African"],
+          correct_answer: 1,
+          explanation: "Hurricane comes from Spanish 'huracán', from Taino 'hurakan' (god of the storm) of Caribbean origin.",
+          hint: "Think about indigenous Caribbean peoples."
+        },
+        {
+          title: "Volcano Vocabulary",
+          description: "Volcanic terminology",
+          question: "The word 'volcano' honors which Roman god?",
+          options: ["Jupiter", "Mars", "Vulcan", "Pluto"],
+          correct_answer: 2,
+          explanation: "Volcano comes from 'Vulcan' (Vulcanus), Roman god of fire and metalworking, whose forge was under Mount Etna.",
+          hint: "Think about the god associated with fire and forges."
+        }
+      ],
+      // Set 37: Mathematics
+      [
+        {
+          title: "Number Names",
+          description: "Mathematical terminology",
+          question: "What does 'calculus' literally mean in Latin?",
+          options: ["Calculation", "Small stone", "Mathematical study", "Complex math"],
+          correct_answer: 1,
+          explanation: "Calculus comes from Latin 'calculus' meaning small stone or pebble. Romans used stones on abacuses for counting.",
+          hint: "Think about ancient counting tools."
+        },
+        {
+          title: "Geometry Origins",
+          description: "Spatial mathematics terms",
+          question: "What does 'geometry' mean in Greek?",
+          options: ["Shape study", "Earth measurement", "Space science", "Angle calculation"],
+          correct_answer: 1,
+          explanation: "Geometry comes from Greek 'geo' (earth) + 'metron' (measurement) - originally for surveying land.",
+          hint: "Think about practical uses for ancient Egyptians measuring fields."
+        },
+        {
+          title: "Algebra History",
+          description: "Abstract math language",
+          question: "What does 'algebra' mean in Arabic?",
+          options: ["Numbers", "Reunion of broken parts", "Equation solving", "Abstract math"],
+          correct_answer: 1,
+          explanation: "Algebra comes from Arabic 'al-jabr' meaning reunion of broken parts, from the title of a 9th century math book.",
+          hint: "Think about putting pieces back together."
+        }
+      ],
+      // Set 38: Medicine and Healing
+      [
+        {
+          title: "Antibiotic Origins",
+          description: "Medical treatment terms",
+          question: "What does 'antibiotic' literally mean in Greek?",
+          options: ["Against bacteria", "Against life", "Kills germs", "Medicine"],
+          correct_answer: 1,
+          explanation: "Antibiotic comes from Greek 'anti' (against) + 'bios' (life) - ironically meaning against life.",
+          hint: "Think about the Greek roots literally, not the modern meaning."
+        },
+        {
+          title: "Surgery Terms",
+          description: "Medical procedure vocabulary",
+          question: "What does 'surgery' originally mean?",
+          options: ["Cutting", "Hand work", "Medical procedure", "Healing art"],
+          correct_answer: 1,
+          explanation: "Surgery comes from Greek 'kheirourgia' meaning hand work, from 'kheir' (hand) + 'ergon' (work).",
+          hint: "Think about what surgeons do with their hands."
+        },
+        {
+          title: "Pharmacy History",
+          description: "Medication terminology",
+          question: "What does 'pharmacy' come from in Greek?",
+          options: ["Medicine", "Healing", "Drug", "Poison or remedy"],
+          correct_answer: 3,
+          explanation: "Pharmacy comes from Greek 'pharmakon' which meant both poison and remedy - a dangerous duality!",
+          hint: "Think about how medicine can heal or harm."
+        }
+      ],
+      // Set 39: Religion and Mythology
+      [
+        {
+          title: "Sacred Words",
+          description: "Religious terminology",
+          question: "What does 'profane' literally mean in Latin?",
+          options: ["Against religion", "Before the temple", "Unholy", "Cursed"],
+          correct_answer: 1,
+          explanation: "Profane comes from Latin 'pro' (before) + 'fanum' (temple) - literally outside the temple, hence not sacred.",
+          hint: "Think about physical location relative to sacred space."
+        },
+        {
+          title: "Mythology Terms",
+          description: "Ancient story language",
+          question: "What does 'myth' mean in Greek?",
+          options: ["False story", "Ancient tale", "Speech or story", "Legend"],
+          correct_answer: 2,
+          explanation: "Myth comes from Greek 'mythos' simply meaning speech, word, or story - not originally 'false'.",
+          hint: "Think about the neutral meaning of storytelling."
+        },
+        {
+          title: "Divine Names",
+          description: "Religious title origins",
+          question: "What does 'deity' come from in Latin?",
+          options: ["Divine being", "God", "Heavenly", "Divine"],
+          correct_answer: 3,
+          explanation: "Deity comes from Latin 'deus' (god) + '-itas' (quality), meaning divine nature or godhood.",
+          hint: "Think about the quality of being god-like."
+        }
+      ],
+      // Set 40: Communication Methods
+      [
+        {
+          title: "Telegraph Technology",
+          description: "Distance communication terms",
+          question: "What does 'telegraph' mean in Greek?",
+          options: ["Electric message", "Far writing", "Wire communication", "Fast message"],
+          correct_answer: 1,
+          explanation: "Telegraph comes from Greek 'tele' (far) + 'graphein' (to write) - writing from a distance.",
+          hint: "Think about the components: distance and writing."
+        },
+        {
+          title: "Telephone Origins",
+          description: "Voice communication terms",
+          question: "What does 'telephone' literally mean?",
+          options: ["Electric voice", "Far sound", "Voice transmission", "Speaking device"],
+          correct_answer: 1,
+          explanation: "Telephone comes from Greek 'tele' (far) + 'phone' (sound/voice) - sound from a distance.",
+          hint: "Similar to telegraph, but with sound instead of writing."
+        },
+        {
+          title: "Radio Waves",
+          description: "Broadcast terminology",
+          question: "What does 'radio' originally refer to?",
+          options: ["Waves", "Ray or beam", "Broadcast", "Wireless"],
+          correct_answer: 1,
+          explanation: "Radio comes from Latin 'radius' meaning ray or beam, referring to electromagnetic radiation.",
+          hint: "Think about the physical phenomenon, not the device."
+        }
+      ],
+      // Set 41: Dance and Movement
+      [
+        {
+          title: "Ballet Terms",
+          description: "Classical dance vocabulary",
+          question: "What does 'ballet' come from in Italian?",
+          options: ["Beautiful dance", "Little dance", "Graceful movement", "Court dance"],
+          correct_answer: 1,
+          explanation: "Ballet comes from Italian 'balletto', diminutive of 'ballo' (dance) - literally 'little dance'.",
+          hint: "Think about the Italian diminutive suffix."
+        },
+        {
+          title: "Waltz History",
+          description: "Ballroom dance origins",
+          question: "What does 'waltz' mean in German?",
+          options: ["Spin", "Roll or turn", "Glide", "Three steps"],
+          correct_answer: 1,
+          explanation: "Waltz comes from German 'walzen' meaning to roll, turn, or revolve - describing the rotating movement.",
+          hint: "Think about the characteristic spinning motion."
+        },
+        {
+          title: "Choreography Language",
+          description: "Dance composition terms",
+          question: "What does 'choreography' mean in Greek?",
+          options: ["Dance creation", "Dance writing", "Movement art", "Stage dancing"],
+          correct_answer: 1,
+          explanation: "Choreography comes from Greek 'khoreia' (dance) + 'graphein' (to write) - literally writing down dances.",
+          hint: "Think about notation and recording movements."
+        }
+      ],
+      // Set 42: Weapons and Warfare
+      [
+        {
+          title: "Sword Names",
+          description: "Blade terminology",
+          question: "What does 'gladiator' literally mean in Latin?",
+          options: ["Fighter", "Swordsman", "Arena warrior", "Slave fighter"],
+          correct_answer: 1,
+          explanation: "Gladiator comes from Latin 'gladius' (sword) + '-ator' (one who) - literally 'swordsman'.",
+          hint: "Think about the weapon, not the arena."
+        },
+        {
+          title: "Arrow Etymology",
+          description: "Projectile weapon terms",
+          question: "The word 'toxic' originally referred to what?",
+          options: ["Poison", "Deadly substance", "Arrow poison", "Snake venom"],
+          correct_answer: 2,
+          explanation: "Toxic comes from Greek 'toxikon' meaning arrow poison, from 'toxon' (bow). Poison for arrows!",
+          hint: "Think about what ancient warriors put on their arrows."
+        },
+        {
+          title: "Shield History",
+          description: "Defensive weapon vocabulary",
+          question: "What does 'aegis' (protective shield) come from?",
+          options: ["Zeus's shield", "Goatskin", "Bronze shield", "Athena's armor"],
+          correct_answer: 1,
+          explanation: "Aegis comes from Greek 'aigis', possibly from 'aix' (goat) - Zeus's shield was made of goatskin.",
+          hint: "Think about what material the mythical shield was made from."
+        }
+      ],
+      // Set 43: Economics and Trade
+      [
+        {
+          title: "Money Terms",
+          description: "Currency vocabulary",
+          question: "Where did the word 'money' come from?",
+          options: ["Latin moneta", "Greek nomisma", "Roman mint", "Juno's temple"],
+          correct_answer: 3,
+          explanation: "Money comes from Latin 'moneta', a title of Juno whose temple housed the Roman mint. 'Moneta' means warner.",
+          hint: "Think about where Romans made their coins."
+        },
+        {
+          title: "Market Origins",
+          description: "Commerce terminology",
+          question: "What does 'bazaar' originally mean in Persian?",
+          options: ["Marketplace", "Trading post", "Market", "Public square"],
+          correct_answer: 2,
+          explanation: "Bazaar comes from Persian 'bāzār' meaning market, from Old Persian meaning 'the place of prices'.",
+          hint: "It's the same concept across languages - a place to trade."
+        },
+        {
+          title: "Trade Routes",
+          description: "Commercial exchange terms",
+          question: "What does 'tariff' originally mean in Arabic?",
+          options: ["Tax", "Price list", "Notification", "Import fee"],
+          correct_answer: 2,
+          explanation: "Tariff comes from Arabic 'ta'rif' meaning notification or definition - originally a list of prices, not taxes.",
+          hint: "Think about information and notification, not fees."
+        }
+      ],
+      // Set 44: Astronomy and Space
+      [
+        {
+          title: "Planet Names",
+          description: "Celestial body terminology",
+          question: "What does 'planet' mean in Greek?",
+          options: ["Heavenly body", "Wanderer", "Orbiting object", "Star follower"],
+          correct_answer: 1,
+          explanation: "Planet comes from Greek 'planetes' meaning wanderer - planets 'wander' across the sky unlike fixed stars.",
+          hint: "Think about how planets move differently than stars."
+        },
+        {
+          title: "Cosmic Terms",
+          description: "Universe vocabulary",
+          question: "What does 'cosmos' mean in Greek?",
+          options: ["Universe", "Stars", "Order or harmony", "Everything"],
+          correct_answer: 2,
+          explanation: "Cosmos comes from Greek 'kosmos' meaning order, harmony, or arrangement - the ordered universe.",
+          hint: "Think about organization and beauty, not just space."
+        },
+        {
+          title: "Lunar Language",
+          description: "Moon terminology",
+          question: "The word 'lunatic' originally connected insanity to what?",
+          options: ["Full moon", "Moon phases", "Lunar cycles", "All of these"],
+          correct_answer: 3,
+          explanation: "Lunatic comes from Latin 'luna' (moon). People believed the moon caused madness, especially during certain phases.",
+          hint: "Think about old beliefs about the moon's effects."
+        }
+      ],
+      // Set 45: Philosophy and Thought
+      [
+        {
+          title: "Logical Terms",
+          description: "Reasoning vocabulary",
+          question: "What does 'logic' come from in Greek?",
+          options: ["Thinking", "Reason", "Word or reason", "Truth"],
+          correct_answer: 2,
+          explanation: "Logic comes from Greek 'logike' from 'logos' meaning word, reason, or principle - the study of reasoning.",
+          hint: "Think about the root that appears in many academic words."
+        },
+        {
+          title: "Ethics Origins",
+          description: "Moral philosophy terms",
+          question: "What does 'ethics' mean in Greek?",
+          options: ["Right behavior", "Character or custom", "Morality", "Good actions"],
+          correct_answer: 1,
+          explanation: "Ethics comes from Greek 'ethikos' meaning character or custom, from 'ethos' (character, custom).",
+          hint: "Think about inherent nature and habitual behavior."
+        },
+        {
+          title: "Skeptic Language",
+          description: "Philosophical doubt terms",
+          question: "What does 'skeptic' literally mean in Greek?",
+          options: ["Doubter", "Observer", "Questioner", "Critic"],
+          correct_answer: 1,
+          explanation: "Skeptic comes from Greek 'skeptikos' meaning thoughtful or inquiring, from 'skeptesthai' (to look, examine).",
+          hint: "Think about careful observation and examination."
+        }
+      ],
+      // Set 46: Agriculture and Farming
+      [
+        {
+          title: "Harvest Words",
+          description: "Crop gathering terms",
+          question: "What does 'harvest' originally mean in Old English?",
+          options: ["Crop gathering", "Autumn season", "Reaping time", "Autumn"],
+          correct_answer: 3,
+          explanation: "Harvest comes from Old English 'hærfest' simply meaning autumn - the season, not the activity.",
+          hint: "Think about the time of year, not the action."
+        },
+        {
+          title: "Plow History",
+          description: "Farming tool terminology",
+          question: "The word 'cultivate' comes from Latin meaning what?",
+          options: ["To farm", "To plow", "To care for", "To till"],
+          correct_answer: 3,
+          explanation: "Cultivate comes from Latin 'colere' meaning to till, inhabit, or care for, related to 'cultus' (tilled).",
+          hint: "Think about working the soil before planting."
+        },
+        {
+          title: "Seed Language",
+          description: "Plant propagation terms",
+          question: "What does 'germinate' come from in Latin?",
+          options: ["Seed", "Sprout", "Bud or sprout", "Grow"],
+          correct_answer: 2,
+          explanation: "Germinate comes from Latin 'germinare' meaning to sprout, from 'germen' (sprout, bud).",
+          hint: "Think about the first stage of plant growth."
+        }
+      ],
+      // Set 47: Theater and Performance
+      [
+        {
+          title: "Drama Origins",
+          description: "Theatrical terminology",
+          question: "What does 'theater' mean in Greek?",
+          options: ["Stage", "Play house", "Place for viewing", "Performance space"],
+          correct_answer: 2,
+          explanation: "Theater comes from Greek 'theatron' meaning place for viewing, from 'theasthai' (to behold).",
+          hint: "Think about what the audience does."
+        },
+        {
+          title: "Tragedy Terms",
+          description: "Dramatic genre language",
+          question: "What does 'tragedy' literally mean in Greek?",
+          options: ["Sad story", "Goat song", "Fatal drama", "Death tale"],
+          correct_answer: 1,
+          explanation: "Tragedy comes from Greek 'tragoidia' from 'tragos' (goat) + 'oide' (song) - possibly goat sacrifices at festivals.",
+          hint: "Think about an unexpected animal connection."
+        },
+        {
+          title: "Comedy Etymology",
+          description: "Humorous performance terms",
+          question: "What does 'comedy' come from in Greek?",
+          options: ["Funny play", "Revel song", "Happy ending", "Laughter show"],
+          correct_answer: 1,
+          explanation: "Comedy comes from Greek 'komoidia' from 'komos' (revel) + 'oide' (song) - songs at festive processions.",
+          hint: "Think about celebrations and parties."
+        }
+      ],
+      // Set 48: Navigation and Exploration
+      [
+        {
+          title: "Compass Terms",
+          description: "Direction-finding vocabulary",
+          question: "What does 'compass' originally mean?",
+          options: ["Circle", "Step together", "Direction finder", "Measurement tool"],
+          correct_answer: 1,
+          explanation: "Compass comes from Latin 'compassare' meaning to pace out, from 'com' (together) + 'passus' (step).",
+          hint: "Think about measuring by walking."
+        },
+        {
+          title: "Map Language",
+          description: "Cartography terminology",
+          question: "What does 'atlas' (map book) refer to?",
+          options: ["Titan holding world", "Greek giant", "Map maker", "North Africa"],
+          correct_answer: 0,
+          explanation: "Atlas comes from the Greek Titan Atlas who held up the sky. Early map books showed him holding a globe.",
+          hint: "Think about Greek mythology and someone holding something."
+        },
+        {
+          title: "Voyage Vocabulary",
+          description: "Travel and journey terms",
+          question: "What does 'navigate' mean in Latin?",
+          options: ["To steer", "To ship-drive", "To travel", "To explore"],
+          correct_answer: 1,
+          explanation: "Navigate comes from Latin 'navigare' from 'navis' (ship) + 'agere' (to drive) - literally to drive a ship.",
+          hint: "Think about the components: vessel and driving."
+        }
+      ],
+      // Set 49: Textiles and Weaving
+      [
+        {
+          title: "Fabric Origins",
+          description: "Cloth material terminology",
+          question: "What does 'textile' mean in Latin?",
+          options: ["Fabric", "Woven", "Cloth", "Weaving"],
+          correct_answer: 1,
+          explanation: "Textile comes from Latin 'textilis' meaning woven, from 'texere' (to weave), related to 'text' (woven words).",
+          hint: "Think about the basic technique of making cloth."
+        },
+        {
+          title: "Linen History",
+          description: "Natural fiber terms",
+          question: "The word 'linen' comes from which plant?",
+          options: ["Cotton", "Hemp", "Flax", "Jute"],
+          correct_answer: 2,
+          explanation: "Linen comes from Latin 'linum' (flax), the plant from which linen fiber is made.",
+          hint: "Think about the specific plant, not the fabric."
+        },
+        {
+          title: "Spinning Stories",
+          description: "Thread-making vocabulary",
+          question: "What does 'spinster' originally mean?",
+          options: ["Unmarried woman", "Woman who spins", "Old maid", "Wool worker"],
+          correct_answer: 1,
+          explanation: "Spinster originally meant a woman who spins thread - a common occupation. Later it meant unmarried woman.",
+          hint: "Think about the literal occupation, not the modern meaning."
+        }
+      ],
+      // Set 50: Education and Learning
+      [
+        {
+          title: "School Origins",
+          description: "Educational institution terms",
+          question: "What did 'school' mean in ancient Greek?",
+          options: ["Learning place", "Leisure time", "Study hall", "Teacher's house"],
+          correct_answer: 1,
+          explanation: "School comes from Greek 'skhole' meaning leisure time - education was for those with free time!",
+          hint: "Think about who had time for education in ancient times."
+        },
+        {
+          title: "Pedagogy Terms",
+          description: "Teaching vocabulary",
+          question: "What does 'pedagogue' literally mean in Greek?",
+          options: ["Teacher", "Child leader", "School master", "Instructor"],
+          correct_answer: 1,
+          explanation: "Pedagogue comes from Greek 'paidagogos' from 'pais' (child) + 'agogos' (leader) - originally a slave who led children to school.",
+          hint: "Think about leading children somewhere."
+        },
+        {
+          title: "Academic Language",
+          description: "Scholarly terminology",
+          question: "The word 'academy' honors what?",
+          options: ["Greek school", "Plato's grove", "Scholar's hall", "Learning center"],
+          correct_answer: 1,
+          explanation: "Academy comes from Akademeia, the grove where Plato taught, named after the hero Akademos.",
+          hint: "Think about where a famous philosopher taught."
+        }
       ]
     ];
 
