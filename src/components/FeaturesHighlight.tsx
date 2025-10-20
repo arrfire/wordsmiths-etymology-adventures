@@ -19,8 +19,8 @@ const FeaturesHighlight = () => {
     {
       icon: <Users className="h-8 w-8 text-emerald-600" />,
       title: "Community Learning",
-      description: "Join 275+ dedicated word enthusiasts in our growing community",
-      highlight: "275+ Members",
+      description: "Join 300+ dedicated word enthusiasts in our growing community",
+      highlight: "300+ Members",
       link: "/community",
       buttonText: "Join Community",
       buttonClass: "bg-emerald-600 hover:bg-emerald-700"

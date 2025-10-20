@@ -38,7 +38,7 @@ const Community = () => {
             What Makes Our Small Community Powerful
           </h2>
           <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-            Our 275 subscribers aren't just numbers - they're dedicated learners who value 
+            Our 300 subscribers aren't just numbers - they're dedicated learners who value 
             genuine expertise and quality educational content over entertainment.
           </p>
         </div>
@@ -103,7 +103,7 @@ const Community = () => {
               >
                 <a href="https://t.me/wordsmithscorner" target="_blank" rel="noopener noreferrer">
                   <Users className="mr-2 h-4 w-4" />
-                  Join 275+ Enthusiasts
+                  Join 300+ Enthusiasts
                 </a>
               </Button>
             </div>

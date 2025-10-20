@@ -16,7 +16,7 @@ const Hero = () => {
           <div className="mb-6 flex justify-center">
             <div className="inline-flex items-center gap-2 bg-blue-800/30 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium border border-blue-400/20">
               <Award className="h-4 w-4 text-yellow-400" />
-              <span>275+ Dedicated Subscribers</span>
+              <span>300+ Dedicated Subscribers</span>
             </div>
           </div>
           

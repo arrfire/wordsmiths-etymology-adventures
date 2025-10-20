@@ -7,8 +7,8 @@ const Stats = () => {
     {
       icon: <Target className="h-8 w-8 text-blue-600" />,
       title: "Quality Over Quantity",
-      description: "275+ dedicated subscribers who genuinely engage with every lesson",
-      highlight: "275+ Subscribers"
+      description: "300+ dedicated subscribers who genuinely engage with every lesson",
+      highlight: "300+ Subscribers"
     },
     {
       icon: <Heart className="h-8 w-8 text-red-500" />,

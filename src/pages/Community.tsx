@@ -20,7 +20,7 @@ const CommunityPage = () => {
     {
       name: "YouTube",
       description: "Watch etymology videos and join discussions",
-      subscribers: "275+ subscribers",
+      subscribers: "300+ subscribers",
       engagement: "700+ avg views",
       icon: <Youtube className="h-8 w-8 text-red-500" />,
       link: "https://www.youtube.com/@thewordsmithscorner",
@@ -30,7 +30,7 @@ const CommunityPage = () => {
     {
       name: "Telegram",
       description: "Join our active community for real-time discussions",
-      subscribers: "275+ members",
+      subscribers: "300+ members",
       engagement: "Daily discussions",
       icon: <MessageSquare className="h-8 w-8 text-blue-500" />,
       link: "https://t.me/wordsmithscorner",
@@ -102,7 +102,7 @@ const CommunityPage = () => {
             Community
           </h1>
           <p className="text-xl text-slate-300 mb-8 max-w-3xl mx-auto">
-            Connect with 275+ dedicated word lovers across multiple platforms. 
+            Connect with 300+ dedicated word lovers across multiple platforms. 
             Choose your preferred way to learn and engage with our etymology community.
           </p>
         </div>
@@ -191,7 +191,7 @@ const CommunityPage = () => {
             <Card className="p-12 bg-white/80 backdrop-blur-sm border-0 shadow-xl">
               <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold text-slate-900 mb-4">
-                  Join 275+ Word Enthusiasts
+                  Join 300+ Word Enthusiasts
                 </h2>
                 <p className="text-lg text-slate-600">
                   Our community members come from all walks of life, united by their passion for language learning.
@@ -200,7 +200,7 @@ const CommunityPage = () => {
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-600 mb-2">275+</div>
+                  <div className="text-3xl font-bold text-blue-600 mb-2">300+</div>
                   <div className="text-slate-600">Active Members</div>
                 </div>
                 <div className="text-center">
@@ -221,7 +221,7 @@ const CommunityPage = () => {
                 >
                   <a href="https://t.me/wordsmithscorner" target="_blank" rel="noopener noreferrer">
                     <Users className="mr-2 h-5 w-5" />
-                    Join 275+ Enthusiasts
+                    Join 300+ Enthusiasts
                   </a>
                 </Button>
               </div>

@@ -48,7 +48,7 @@ const CallToAction = () => {
               <div className="flex items-center gap-4">
                 <Users className="h-8 w-8 text-yellow-400" />
                 <div>
-                  <div className="font-semibold">275+ Word Detectives</div>
+                  <div className="font-semibold">300+ Word Detectives</div>
                   <div className="text-sm text-slate-300">Dedicated language enthusiasts</div>
                 </div>
               </div>
@@ -90,7 +90,7 @@ const CallToAction = () => {
             >
               <a href="https://t.me/wordsmithscorner" target="_blank" rel="noopener noreferrer">
                 <Users className="mr-2 h-5 w-5" />
-                Join 275+ Enthusiasts
+                Join 300+ Enthusiasts
               </a>
             </Button>
           </div>
